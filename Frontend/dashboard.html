@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FINANCY</title>
-    <link rel="stylesheet" href="dashboard.css"> 
+    <link rel="stylesheet" href="styles/dashboard.css"> 
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -204,35 +204,45 @@
         </div>
     </div>
 
-    <div id="profileModal" class="modal">
-        <div class="modal-content">
-            <h2>👤 My Profile</h2>
+    <!-- Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h2>👤 My Profile</h2>
+        
+        <!-- View Mode -->
+        <div id="profileViewMode">
             <div style="text-align: center; margin-bottom: 30px;">
                 <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
                     <span id="profileInitials" style="font-size: 36px; font-weight: bold; color: white;">JD</span>
                 </div>
             </div>
+            
             <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
                 <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Full Name</label>
                 <div id="profileFullName" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
             </div>
+            
             <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
                 <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Email</label>
                 <div id="profileEmail" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
             </div>
+            
             <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
                 <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Student ID</label>
                 <div id="profileStudentId" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
             </div>
+            
             <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
                 <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Monthly Allowance</label>
                 <div id="profileAllowance" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
             </div>
+            
             <div style="padding: 15px 0;">
                 <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Member Since</label>
                 <div id="profileMemberSince" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
                 <div style="background: var(--bg-main); padding: 20px; border-radius: 10px; text-align: center;">
                     <div id="totalExpensesCount" style="font-size: 32px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">0</div>
                     <div style="font-size: 13px; color: var(--text-secondary);">Total Expenses</div>
@@ -242,11 +252,78 @@
                     <div style="font-size: 13px; color: var(--text-secondary);">Active Budgets</div>
                 </div>
             </div>
+            
             <div class="modal-actions">
+                <button class="btn btn-danger" onclick="confirmDeleteAccount()" style="flex: 0 0 auto;">Delete Account</button>
+                <button class="btn btn-secondary" onclick="switchToEditMode()">Edit Profile</button>
                 <button class="btn" onclick="closeProfileModal()">Close</button>
             </div>
         </div>
+
+        <!-- Edit Mode -->
+            <div id="profileEditMode" style="display: none;">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="editFirstName" placeholder="Juan" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="editLastName" placeholder="Dela Cruz" />
+                </div>
+                <div class="form-group">
+                    <label>Student ID (Optional)</label>
+                    <input type="text" id="editStudentId" placeholder="2024-12345" />
+                </div>
+                <div class="form-group">
+                    <label>Email (Cannot be changed)</label>
+                    <input type="email" id="editEmail" disabled style="background: #f0f0f0; cursor: not-allowed;" />
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                    <button class="btn" onclick="saveProfileChanges()">Save Changes</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Confirmation Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 id="confirmTitle">Confirm Action</h2>
+        <p id="confirmMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+            <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Modal -->
+<div id="alertModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 id="alertTitle">Notice</h2>
+        <p id="alertMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeAlertModal()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Prompt Modal -->
+<div id="promptModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 id="promptTitle">Input Required</h2>
+        <p id="promptMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+        <div class="form-group">
+            <input type="text" id="promptInput" placeholder="Enter value..." />
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closePromptModal()">Cancel</button>
+            <button class="btn" onclick="submitPrompt()">Submit</button>
+        </div>
+    </div>
+</div>
 
     <script>
         const API_URL = 'http://localhost:5290/api';
@@ -802,7 +879,7 @@
             const description = document.getElementById('expenseDescription').value;
 
             if (!amount || !date) {
-                alert('Please fill in all required fields');
+                showAlert('Error', 'Please fill in all required fields');
                 return;
             }
 
@@ -834,10 +911,11 @@
                     await loadBudgets();
                     calculateSummary();
                 } else {
-                    alert(data.message);
+                    showAlert('Error', data.message);
+
                 }
             } catch (error) {
-                alert('Error saving expense!');
+                showAlert('Error', 'Error saving expense!');
             }
         }
 
@@ -855,26 +933,26 @@
         }
 
         async function deleteExpense(expenseId) {
-            if (!confirm('Are you sure you want to delete this expense?')) return;
+    showConfirm('Delete Expense', 'Are you sure you want to delete this expense?', async () => {
+        try {
+            const response = await fetch(`${API_URL}/expense/${expenseId}/${currentUser.userId}`, {
+                method: 'DELETE'
+            });
 
-            try {
-                const response = await fetch(`${API_URL}/expense/${expenseId}/${currentUser.userId}`, {
-                    method: 'DELETE'
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    await loadExpenses();
-                    await loadBudgets();
-                    calculateSummary();
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                alert('Error deleting expense!');
+            const data = await response.json();
+            
+            if (data.success) {
+                await loadExpenses();
+                await loadBudgets();
+                calculateSummary();
+            } else {
+                showAlert('Error', data.message);
             }
+        } catch (error) {
+            showAlert('Error', 'Error deleting expense!');
         }
+    });
+}
 
         function openBudgetModal() {
             currentBudgetId = null;
@@ -893,7 +971,7 @@
             const limit = parseFloat(document.getElementById('budgetLimit').value);
 
             if (!limit || limit <= 0) {
-                alert('Please enter a valid budget amount');
+                showAlert('Error', 'Please enter a valid budget amount');
                 return;
             }
 
@@ -922,12 +1000,14 @@
                 if (data.success) {
                     closeBudgetModal();
                     await loadBudgets();
-                    alert(currentBudgetId ? 'Budget updated successfully!' : 'Budget created successfully!');
+                    showAlert('Success', currentBudgetId ? 'Budget updated successfully!' : 'Budget created successfully!');
+
                 } else {
-                    alert(data.message);
+                    showAlert('Error', data.message);
+
                 }
             } catch (error) {
-                alert('Error saving budget!');
+                showAlert('Error', 'Error saving expense!');
             }
         }
 
@@ -941,26 +1021,25 @@
         }
 
         async function deleteBudget(budgetId) {
-            if (!confirm('Are you sure you want to delete this budget?')) return;
+    showConfirm('Delete Budget', 'Are you sure you want to delete this budget?', async () => {
+        try {
+            const response = await fetch(`${API_URL}/budget/${budgetId}/${currentUser.userId}`, {
+                method: 'DELETE'
+            });
 
-            try {
-                const response = await fetch(`${API_URL}/budget/${budgetId}/${currentUser.userId}`, {
-                    method: 'DELETE'
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    await loadBudgets();
-                    alert('Budget deleted successfully!');
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                alert('Error deleting budget!');
+            const data = await response.json();
+            
+            if (data.success) {
+                await loadBudgets();
+                showAlert('Success', 'Budget deleted successfully!');
+            } else {
+                showAlert('Error', data.message);
             }
+        } catch (error) {
+            showAlert('Error', 'Error deleting budget!');
         }
-
+    });
+}
         function openAllowanceModal() {
             document.getElementById('currentAllowance').textContent = `₱${currentUser.monthlyAllowance.toFixed(2)}`;
             document.getElementById('newAllowance').value = currentUser.monthlyAllowance;
@@ -975,7 +1054,7 @@
             const newAllowance = parseFloat(document.getElementById('newAllowance').value);
 
             if (!newAllowance || newAllowance <= 0) {
-                alert('Please enter a valid amount');
+                showAlert('Error', 'Please enter a valid amount');
                 return;
             }
 
@@ -998,12 +1077,12 @@
                     document.getElementById('allowanceAmount').textContent = `₱${newAllowance.toFixed(2)}`;
                     closeAllowanceModal();
                     calculateSummary();
-                    alert('Allowance updated successfully!');
+                    showAlert('Success', 'Allowance updated successfully!');
                 } else {
-                    alert(data.message);
+                    showAlert('Error', data.message);
                 }
             } catch (error) {
-                alert('Error updating allowance!');
+                showAlert('Error', 'Error updating allowance!');
             }
         }
 
@@ -1028,7 +1107,7 @@
             const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
 
             if (!name || !target || !date) {
-                alert('Please fill in all required fields');
+                showAlert('Error', 'Please fill in all required fields');
                 return;
             }
 
@@ -1057,47 +1136,179 @@
         }
 
         function deleteGoal(index) {
-            if (!confirm('Are you sure you want to delete this goal?')) return;
-            savingsGoals.splice(index, 1);
+    showConfirm('Delete Goal', 'Are you sure you want to delete this goal?', () => {
+        savingsGoals.splice(index, 1);
+        localStorage.setItem(`goals_${currentUser.userId}`, JSON.stringify(savingsGoals));
+        displayGoals();
+    });
+}
+
+        function updateGoalProgress(index) {
+    showPrompt('Add Savings', 'Enter amount to add to savings:', (amount) => {
+        if (amount && !isNaN(amount)) {
+            const addAmount = parseFloat(amount);
+            savingsGoals[index].currentAmount += addAmount;
             localStorage.setItem(`goals_${currentUser.userId}`, JSON.stringify(savingsGoals));
             displayGoals();
         }
+    });
+}
 
-        function updateGoalProgress(index) {
-            const amount = prompt('Enter amount to add to savings:');
-            if (amount && !isNaN(amount)) {
-                const addAmount = parseFloat(amount);
-                savingsGoals[index].currentAmount += addAmount;
-                localStorage.setItem(`goals_${currentUser.userId}`, JSON.stringify(savingsGoals));
-                displayGoals();
-            }
-        }
+        async function openProfileModal() {
+    // Get initials
+    const initials = currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+    document.getElementById('profileInitials').textContent = initials.toUpperCase();
+    
+    // Set profile info
+    document.getElementById('profileFullName').textContent = currentUser.fullName;
+    document.getElementById('profileEmail').textContent = currentUser.email;
+    document.getElementById('profileStudentId').textContent = currentUser.studentId || 'Not provided';
+    document.getElementById('profileAllowance').textContent = `₱${currentUser.monthlyAllowance.toFixed(2)}`;
+    
+    // Format member since date
+    if (currentUser.createdAt) {
+        const date = new Date(currentUser.createdAt);
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('profileMemberSince').textContent = date.toLocaleDateString('en-US', options);
+    } else {
+        document.getElementById('profileMemberSince').textContent = 'N/A';
+    }
+    
+    // Get stats
+    await loadProfileStats();
+    
+    // Show view mode
+    document.getElementById('profileViewMode').style.display = 'block';
+    document.getElementById('profileEditMode').style.display = 'none';
+    
+    document.getElementById('profileModal').classList.add('active');
+}
 
-        function openProfileModal() {
-            // Set profile data
-            document.getElementById('profileFullName').textContent = currentUser.fullName;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            document.getElementById('profileStudentId').textContent = currentUser.studentId;
-            document.getElementById('profileAllowance').textContent = `₱${currentUser.monthlyAllowance.toFixed(2)}`;
-            
-            // Set initials
-            const initials = currentUser.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('profileInitials').textContent = initials;
-            
-            // Set member since (using current date as placeholder)
-            const memberSince = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            document.getElementById('profileMemberSince').textContent = memberSince;
-            
-            // Set stats
-            document.getElementById('totalExpensesCount').textContent = allExpenses.length;
-            document.getElementById('totalBudgetsCount').textContent = allBudgets.length;
-            
-            document.getElementById('profileModal').classList.add('active');
-        }
+function closeProfileModal() {
+    document.getElementById('profileModal').classList.remove('active');
+}
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.remove('active');
+async function loadProfileStats() {
+    try {
+        // Get total expenses count
+        const expenseResponse = await fetch(`${API_URL}/expense/${currentUser.userId}`);
+        const expenseData = await expenseResponse.json();
+        
+        if (expenseData.success) {
+            document.getElementById('totalExpensesCount').textContent = expenseData.expenses.length;
         }
+        
+        // Get total budgets count
+        const budgetResponse = await fetch(`${API_URL}/budget/${currentUser.userId}`);
+        const budgetData = await budgetResponse.json();
+        
+        if (budgetData.success) {
+            document.getElementById('totalBudgetsCount').textContent = budgetData.budgets.length;
+        }
+    } catch (error) {
+        console.error('Error loading profile stats:', error);
+    }
+}
+
+function switchToEditMode() {
+    // Populate edit fields
+    document.getElementById('editFirstName').value = currentUser.firstName;
+    document.getElementById('editLastName').value = currentUser.lastName;
+    document.getElementById('editStudentId').value = currentUser.studentId || '';
+    document.getElementById('editEmail').value = currentUser.email;
+    
+    // Switch views
+    document.getElementById('profileViewMode').style.display = 'none';
+    document.getElementById('profileEditMode').style.display = 'block';
+}
+
+function cancelEdit() {
+    document.getElementById('profileViewMode').style.display = 'block';
+    document.getElementById('profileEditMode').style.display = 'none';
+}
+
+async function saveProfileChanges() {
+    const firstName = document.getElementById('editFirstName').value.trim();
+    const lastName = document.getElementById('editLastName').value.trim();
+    const studentId = document.getElementById('editStudentId').value.trim();
+
+    if (!firstName || !lastName) {
+        showAlert('Error', 'First name and last name are required!');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/auth/update-profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: currentUser.userId,
+                firstName,
+                lastName,
+                studentId: studentId || null
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update local storage
+            currentUser = data.user;
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            // Update navbar
+            document.getElementById('userName').textContent = currentUser.fullName;
+            
+            // Refresh profile display
+            await openProfileModal();
+            
+            showAlert('Success', 'Profile updated successfully!');
+        } else {
+            showAlert('Error', data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error', 'Error updating profile!');
+    }
+}
+
+function confirmDeleteAccount() {
+    showConfirm(
+        '⚠️ Delete Account', 
+        'WARNING: This will permanently delete your account and ALL your data (expenses, budgets, etc.). This action CANNOT be undone! Are you absolutely sure?',
+        () => {
+            showPrompt('Confirm Deletion', 'Type "DELETE" to confirm account deletion:', (value) => {
+                if (value === 'DELETE') {
+                    deleteAccount();
+                } else {
+                    showAlert('Cancelled', 'Account deletion cancelled.');
+                }
+            });
+        }
+    );
+}
+
+async function deleteAccount() {
+    try {
+        const response = await fetch(`${API_URL}/auth/delete-account/${currentUser.userId}`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showAlert('Success', 'Your account has been deleted. You will now be logged out.');
+
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        } else {
+            showAlert('Error', data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error', 'Error deleting account!');
+    }
+}
 
         function formatDate(dateString) {
             const date = new Date(dateString);
@@ -1113,11 +1324,11 @@
         }
 
         function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('user');
-                window.location.href = 'index.html';
-            }
-        }
+    showConfirm('Logout', 'Are you sure you want to logout?', () => {
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+    });
+}
 
         // Close modals when clicking outside
         window.onclick = function(event) {
@@ -1125,6 +1336,68 @@
                 event.target.classList.remove('active');
             }
         }
+
+        // Modal management variables
+let confirmCallback = null;
+let promptCallback = null;
+
+// Custom Alert
+function showAlert(title, message) {
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertMessage').textContent = message;
+    document.getElementById('alertModal').classList.add('active');
+}
+
+function closeAlertModal() {
+    document.getElementById('alertModal').classList.remove('active');
+}
+
+// Custom Confirm
+function showConfirm(title, message, callback) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = message;
+    confirmCallback = callback;
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+    confirmCallback = null;
+}
+
+function confirmAction() {
+    if (confirmCallback) confirmCallback();
+    closeConfirmModal();
+}
+
+// Custom Prompt
+function showPrompt(title, message, callback, defaultValue = '') {
+    document.getElementById('promptTitle').textContent = title;
+    document.getElementById('promptMessage').textContent = message;
+    document.getElementById('promptInput').value = defaultValue;
+    promptCallback = callback;
+    document.getElementById('promptModal').classList.add('active');
+    setTimeout(() => document.getElementById('promptInput').focus(), 100);
+}
+
+function closePromptModal() {
+    document.getElementById('promptModal').classList.remove('active');
+    promptCallback = null;
+}
+
+function submitPrompt() {
+    const value = document.getElementById('promptInput').value;
+    if (promptCallback) promptCallback(value);
+    closePromptModal();
+}
+
+// Allow Enter key to submit prompt
+document.getElementById('promptInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        submitPrompt();
+    }
+});
+
     </script>
 </body>
 </html>

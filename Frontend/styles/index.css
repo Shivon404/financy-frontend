@@ -6,7 +6,7 @@
 
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            background-image: url('loginbg.png');
+            background-image: url('images/loginbg.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -328,3 +328,177 @@
         .fade-enter-from, .fade-leave-to {
             opacity: 0;
         }
+
+        /* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    overflow: hidden;
+    animation: modal-slide-up 0.3s ease-out;
+}
+
+.modal-header {
+    padding: 24px 24px 16px;
+    text-align: center;
+}
+
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.modal-content.success .modal-icon {
+    background: #d4edda;
+    color: #28a745;
+}
+
+.modal-content.error .modal-icon {
+    background: #f8d7da;
+    color: #dc3545;
+}
+
+.modal-content.info .modal-icon {
+    background: #d1ecf1;
+    color: #17a2b8;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #333;
+}
+
+.modal-body {
+    padding: 0 24px 24px;
+    text-align: center;
+}
+
+.modal-body p {
+    margin: 0;
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.modal-footer {
+    padding: 16px 24px 24px;
+    text-align: center;
+}
+
+.modal-btn {
+    background: #2ec471;  /* ← Changed to your green */
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 10px;  /* ← Changed to match your radius */
+    font-size: 16px;
+    font-weight: 700;  /* ← Changed to match your weight */
+    cursor: pointer;
+    transition: all 0.3s;  /* ← Changed to match yours */
+    box-shadow: 0 4px 15px rgba(74, 124, 35, 0.3);  /* ← Your shadow */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine effect */
+.modal-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.modal-btn:hover::before {
+    left: 100%;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 124, 35, 0.4);  /* ← Your hover shadow */
+}
+
+.modal-btn:active {
+    transform: translateY(0);
+}
+
+/* Modal Animations */
+.modal-fade-enter-active, .modal-fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.modal-fade-enter-from, .modal-fade-leave-to {
+    opacity: 0;
+}
+
+.modal-fade-enter-active .modal-content {
+    animation: modal-slide-up 0.3s ease-out;
+}
+
+.modal-fade-leave-active .modal-content {
+    animation: modal-slide-down 0.3s ease-in;
+}
+
+@keyframes modal-slide-up {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes modal-slide-down {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+}
+
+/* Responsive modal */
+@media (max-width: 480px) {
+    .modal-content {
+        max-width: 90%;
+    }
+    
+    .modal-header h3 {
+        font-size: 20px;
+    }
+    
+    .modal-body p {
+        font-size: 14px;
+    }
+}

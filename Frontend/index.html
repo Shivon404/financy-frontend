@@ -4,16 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FINANCY</title>
-    <link rel="stylesheet" href="index.css"> 
+    <link rel="stylesheet" href="styles/index.css"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
-   
 </head>
 <body>
     <div id="app">
+        <!-- Modal Component -->
+        <transition name="modal-fade">
+            <div v-if="modal.show" class="modal-overlay" @click="closeModal">
+                <div class="modal-content" @click.stop :class="modal.type">
+                    <div class="modal-header">
+                        <div class="modal-icon">
+                            <span v-if="modal.type === 'success'">✓</span>
+                            <span v-else-if="modal.type === 'error'">✕</span>
+                            <span v-else>ℹ</span>
+                        </div>
+                        <h3>{{ modal.title }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ modal.message }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="closeModal" class="modal-btn">OK</button>
+                    </div>
+                </div>
+            </div>
+        </transition>
+
         <div class="container" :class="{ landscape: activeTab === 'register' }">
             <div class="logo">
                 <div class="logo-icon">
-                    <img src="financylogo.png" alt="Logo">
+                    <img src="styles/images/financylogo.png" alt="Logo">
                 </div>
 
                 <h1>FINANCY</h1>
@@ -46,16 +67,7 @@
                     />
                 </div>
                 <button @click="login">Login</button>
-                <transition name="fade">
-                    <div v-if="loginMessage.text" class="message" :class="loginMessage.type">
-                        {{ loginMessage.text }}
-                    </div>
-                </transition>
-                <div class="test-info">
-                    <strong>🧪 Test Account</strong>
-                    Email: test@student.com<br>
-                    Password: test123
-                </div>
+                
             </div>
 
             <!-- Register Form -->
@@ -99,11 +111,6 @@
                         <button @click="register">Create Account</button>
                     </div>
                 </div>
-                <transition name="fade">
-                    <div v-if="registerMessage.text" class="message" :class="registerMessage.type">
-                        {{ registerMessage.text }}
-                    </div>
-                </transition>
             </div>
         </div>
     </div>
@@ -129,28 +136,33 @@
                         studentId: '',
                         monthlyAllowance: 5000
                     },
-                    loginMessage: {
-                        text: '',
-                        type: ''
-                    },
-                    registerMessage: {
-                        text: '',
-                        type: ''
+                    modal: {
+                        show: false,
+                        title: '',
+                        message: '',
+                        type: 'info' // 'success', 'error', 'info'
                     }
                 }
             },
             methods: {
+                showModal(title, message, type = 'info') {
+                    this.modal = {
+                        show: true,
+                        title,
+                        message,
+                        type
+                    };
+                },
+                closeModal() {
+                    this.modal.show = false;
+                },
                 switchTab(tab) {
                     this.activeTab = tab;
-                    this.loginMessage = { text: '', type: '' };
-                    this.registerMessage = { text: '', type: '' };
+                    this.closeModal();
                 },
                 async login() {
                     if (!this.loginData.email || !this.loginData.password) {
-                        this.loginMessage = {
-                            text: 'Please fill in all fields',
-                            type: 'error'
-                        };
+                        this.showModal('Missing Information', 'Please fill in all fields', 'error');
                         return;
                     }
 
@@ -165,36 +177,30 @@
 
                         if (data.success) {
                             localStorage.setItem('user', JSON.stringify(data.user));
-                            window.location.href = 'dashboard.html';
+                            
+                            // Check if admin
+                            if (data.isAdmin) {
+                                window.location.href = 'admin_dashboard.html';
+                            } else {
+                                window.location.href = 'dashboard.html';
+                            }
                         } else {
-                            this.loginMessage = {
-                                text: data.message,
-                                type: 'error'
-                            };
+                            this.showModal('Login Failed', data.message, 'error');
                         }
                     } catch (error) {
-                        this.loginMessage = {
-                            text: 'Error connecting to server!',
-                            type: 'error'
-                        };
+                        this.showModal('Connection Error', 'Error connecting to server!', 'error');
                     }
                 },
                 async register() {
                     const { firstName, lastName, email, password, studentId, monthlyAllowance } = this.registerData;
 
                     if (!firstName || !lastName || !email || !password) {
-                        this.registerMessage = {
-                            text: 'Please fill in all required fields',
-                            type: 'error'
-                        };
+                        this.showModal('Missing Information', 'Please fill in all required fields', 'error');
                         return;
                     }
 
                     if (password.length < 6) {
-                        this.registerMessage = {
-                            text: 'Password must be at least 6 characters',
-                            type: 'error'
-                        };
+                        this.showModal('Weak Password', 'Password must be at least 6 characters', 'error');
                         return;
                     }
 
@@ -215,22 +221,16 @@
                         const data = await response.json();
 
                         if (data.success) {
-                            this.registerMessage = {
-                                text: data.message + ' Switching to login...',
-                                type: 'success'
-                            };
-                            setTimeout(() => this.switchTab('login'), 2000);
+                            this.showModal('Success!', data.message + ' Redirecting to login...', 'success');
+                            setTimeout(() => {
+                                this.closeModal();
+                                this.switchTab('login');
+                            }, 2000);
                         } else {
-                            this.registerMessage = {
-                                text: data.message,
-                                type: 'error'
-                            };
+                            this.showModal('Registration Failed', data.message, 'error');
                         }
                     } catch (error) {
-                        this.registerMessage = {
-                            text: 'Error connecting to server!',
-                            type: 'error'
-                        };
+                        this.showModal('Connection Error', 'Error connecting to server!', 'error');
                     }
                 }
             }

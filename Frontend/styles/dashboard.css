@@ -680,3 +680,47 @@
                 height: 250px;
             }
         }
+
+        .btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+/* Modal animations */
+.modal {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal.active .modal-content {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Alert/Confirm specific styling */
+#confirmMessage, #alertMessage, #promptMessage {
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+#promptInput {
+    width: 100%;
+    margin-top: 10px;
+}
