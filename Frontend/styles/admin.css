@@ -7,7 +7,7 @@
 
         :root {
             --primary: #2ec471;
-            --primary-dark:  #2ec471;
+            --primary-dark:  #28a460;
             --secondary:  #2ec471;;
             --success: #28a745;
             --warning: #ffc107;
@@ -27,6 +27,8 @@
             --text-secondary: #aaa;
             --shadow: 0 2px 10px rgba(0,0,0,0.3);
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+            --primary-dark:  #2ec471;
+            --primary: #28a460;
         }
 
         body {
@@ -36,12 +38,112 @@
             transition: all 0.3s ease;
         }
 
+        #logo {
+            transform: translateX(-10px);
+            width: 70px;
+            height: auto;
+            margin-right: 5px;
+        }
+
+        .sidebar-hdr {
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        .sidebar {
+            align-items: left;
+            background-color: var(--primary);
+            position: fixed;
+            bottom: 0;
+            z-index: 1000;
+            height: 100%;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .sidebar.closed {
+            width: 80px;
+        }
+
+        .sidebar.opened {
+            width: 400px;
+        }
+
+        .sidebar-list {
+            /* margin-left: 50px; */
+            font-size: 20px;
+        }
+
+            /* .sidebar:hover {
+
+            } */
+
+            #sidebar-btn {
+                /* background-color: yellow; */
+                /* padding: 5px; */
+                display: inline-block;
+            }
+
+            #sidebar-page {
+                /* margin: 10px 10px 10px 30px; */
+            }
+
+            #sidebar-page:hover {
+                background-color: var(--success);
+                cursor: pointer;
+            }
+
+            #sidebar-page:active {
+                background-color: var(--secondary);
+                cursor: pointer;
+            }
+        
+        li {
+            /* background-color: yellow; */
+            padding:5px;
+            margin: 10px 0;
+            list-style: none;
+            cursor: pointer;
+            transition: 0.5s background-color ease;
+        }
+
+        li:hover {
+            background-color: var(--primary-dark);
+            border-radius: 5px;
+        }
+
+        li i {
+            font-size: 28px;
+        }
+
+        /* ul {
+            text-decoration: none;
+        } */
+            
+        @keyframes sidebarFadeIn {
+            0% { 
+                transform: translateX(-60px);
+                /* width: 0px;  */
+            }
+            100% { width: 80px; }
+        }
+
         .navbar {
             background: var(--bg-card);
             padding: 15px 30px;
             box-shadow: var(--shadow);
             display: flex;
-            justify-content: space-between;
+            justify-content: right;
             align-items: center;
             position: sticky;
             top: 0;
