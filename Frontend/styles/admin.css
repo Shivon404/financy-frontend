@@ -7,6 +7,20 @@
     display: block;
 }
 
+.stats-grid {
+    margin: 25px;
+}
+.stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tertiary);
+    padding: 25px;
+    border-radius: 15px;
+    /* box-shadow: var(--shadow); */
+    margin-bottom: 20px;
+}
+
 /* ===========================
    GLOBAL STYLES
    =========================== */
@@ -21,6 +35,7 @@
     --primary: #2ec471;
     --primary-dark: #28a460;
     --secondary: #2ec471;
+    --tertiary: #dcffe0;
     --success: #28a745;
     --warning: #ffc107;
     --danger: #dc3545;
@@ -41,6 +56,7 @@ body.dark-mode {
     --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
     --primary-dark: #2ec471;
     --primary: #28a460;
+    --tertiary: #284f2e;
 }
     body #logo { filter: invert(82%); }
     body.dark-mode #logo { filter: invert(6%); }
@@ -278,15 +294,24 @@ li {
    =========================== */
 
 .container {
-    transition: width 0.4s ease;
-    max-width: 1400px;
-    width: 1290px;
-    margin: 30px auto;
+    transition: margin-left 0.4s ease, width 0.4s ease;
+    max-width: none;
+    width: calc(100vw - 130px);
+    margin-left: 130px;
+    margin-top: 30px;
+    margin-right: 20px;
+    margin-bottom: 30px;
     padding: 0 20px;
+}
+
+.container.sidebar-open {
+    width: calc(100vw - 420px);
+    margin-left: 420px;
 }
 
 .page {
     display: none;
+    width: 100%;
 }
 
 .page.active {
@@ -379,6 +404,7 @@ li {
     border-radius: 15px;
     box-shadow: var(--shadow);
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .section-header {
