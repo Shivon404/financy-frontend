@@ -1,54 +1,211 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN FINANCY</title>
-    <link rel="stylesheet" href="styles/admin.css"> 
-    <link href='https://cdn.boxicons.com/3.0.5/fonts/basic/boxicons.min.css' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div class="navbar">
-    
-        <div class="user-info">
-            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-            <span id="userName" class="user-name-btn" onclick="openProfileModal()">Loading...</span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ADMIN FINANCY</title>
+        <link rel="stylesheet" href="styles/admin.css"> 
+        <link href='https://cdn.boxicons.com/3.0.5/fonts/basic/boxicons.min.css' rel='stylesheet'>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div class="navbar">
+        
+            <div class="user-info">
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <span id="userName" class="user-name-btn" onclick="openProfileModal()">Loading...</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="sidebar closed">
+        <span class="sidebar-hdr" onclick = "toggleSideBar()">
+            <img id="logo" src="styles/images/financylogo.png" alt="Financy Logo">
+            FINANCY
+        </span>
+        <ul class="sidebar-list">
+            <li class="sidebar-page active" data-page = "UserManagement"onclick = "togglePage(this)"><i class='bxr bxs-user'></i> Manage Users</li>
+            <li class="sidebar-page" data-page = "CategoryManagement" onclick = "togglePage(this)"><i class='bxr bx-categories bx-rotate-90 bx-flip-horizontal'></i> Manage Categories</li>
+            <!-- <li class="sidebar-page inactive" id = "ProfilesManagement  " onclick = "togglePage"><i class='bxr bxs-user-square bx-rotate-90 bx-flip-horizontal'></i> Manage Profile</li> -->
+        </ul>
+        </div>
+
+        <div class="container">
+            <div id="UserManagement" class = "page active">
+                <div class="section">
+                    Hello
+                </div>
+            </div>
+
+            <div id="CategoryManagement" class = "page">
+                <div class="section">
+                    <!-- di sa nako send ang part nako dinhi aghhh -->
+                </div>
+            </div>
+        </div>
+
+<div id="addCategoryModal" class="modal">
+    <div class="modal-content">
+        <h2>Add Category</h2>
+        <button class="btn btn-secondary" onclick="closeAddCategoryModal()">Close</button>
+    </div>
+</div>
+
+    <!-- Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h2>👤 My Profile</h2>
+        
+        <!-- View Mode -->
+        <div id="profileViewMode">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
+                    <span id="profileInitials" style="font-size: 36px; font-weight: bold; color: white;">JD</span>
+                </div>
+            </div>
+            
+            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
+                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Full Name</label>
+                <div id="profileFullName" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+            </div>
+            
+            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
+                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Email</label>
+                <div id="profileEmail" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+            </div>
+            
+            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
+                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Student ID</label>
+                <div id="profileStudentId" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+            </div>
+            
+            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
+                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Monthly Allowance</label>
+                <div id="profileAllowance" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+            </div>
+            
+            <div style="padding: 15px 0;">
+                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Member Since</label>
+                <div id="profileMemberSince" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                <div style="background: var(--bg-main); padding: 20px; border-radius: 10px; text-align: center;">
+                    <div id="totalExpensesCount" style="font-size: 32px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">0</div>
+                    <div style="font-size: 13px; color: var(--text-secondary);">Total Expenses</div>
+                </div>
+                <div style="background: var(--bg-main); padding: 20px; border-radius: 10px; text-align: center;">
+                    <div id="totalBudgetsCount" style="font-size: 32px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">0</div>
+                    <div style="font-size: 13px; color: var(--text-secondary);">Active Budgets</div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-danger" onclick="confirmDeleteAccount()" style="flex: 0 0 auto;">Delete Account</button>
+                <button class="btn btn-secondary" onclick="switchToEditMode()">Edit Profile</button>
+                <button class="btn" onclick="closeProfileModal()">Close</button>
+            </div>
+        </div>
+
+        <!-- Edit Mode -->
+            <div id="profileEditMode" style="display: none;">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="editFirstName" placeholder="Juan" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="editLastName" placeholder="Dela Cruz" />
+                </div>
+                <div class="form-group">
+                    <label>Student ID (Optional)</label>
+                    <input type="text" id="editStudentId" placeholder="2024-12345" />
+                </div>
+                <div class="form-group">
+                    <label>Email (Cannot be changed)</label>
+                    <input type="email" id="editEmail" disabled style="background: #f0f0f0; cursor: not-allowed;" />
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                    <button class="btn" onclick="saveProfileChanges()">Save Changes</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="sidebar" onclick = "toggleSideBar()">
-    <span class="sidebar-hdr">
-        <img id="logo" src="styles/images/financylogo.png" alt="Financy Logo">
-        FINANCY
-    </span>
-    <ul class="sidebar-list">
-        <li class="sidebar-page"><i class='bxr bxs-user'></i> Manage Users</li>
-        <li class="sidebar-page"><i class='bxr bx-categories bx-rotate-90 bx-flip-horizontal'></i> Manage Categories</li>
-        <li class="sidebar-page"><i class='bxr bxs-user-square bx-rotate-90 bx-flip-horizontal'></i> Manage Profile</li>
-    </ul>
+    <!-- Confirmation Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 id="confirmTitle">Confirm Action</h2>
+        <p id="confirmMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+            <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+        </div>
     </div>
+</div>
 
-    <div class="container">
-        <!-- Display What Pages Here -->
+<!-- Alert Modal -->
+<div id="alertModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 id="alertTitle">Notice</h2>
+        <p id="alertMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeAlertModal()">OK</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        // toggle open/close admin side bar
-        window.onload = () => { document.querySelector(".sidebar").classList.add("closed"); }
-        
-        function toggleSideBar() {
-            const sidebar = document.querySelector(".sidebar");
+<!-- Prompt Modal -->
+<div id="promptModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2 id="promptTitle">Input Required</h2>
+        <p id="promptMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+        <div class="form-group">
+            <input type="text" id="promptInput" placeholder="Enter value..." />
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closePromptModal()">Cancel</button>
+            <button class="btn" onclick="submitPrompt()">Submit</button>
+        </div>
+    </div>
+</div>
+        <!--  -->
 
-            if(sidebar.classList.contains("closed")) {
-                sidebar.classList.remove("closed");
-                sidebar.classList.add("opened");
-            } else {
-                sidebar.classList.remove("opened");
-                sidebar.classList.add("closed");
+        <script>
+            function openAddCategoryModal() {
+    document.getElementById('addCategoryModal').classList.add('active');
+}
+
+function closeAddCategoryModal() {
+    document.getElementById('addCategoryModal').classList.remove('active');
+}
+            
+            function toggleSideBar() {
+                const sidebar = document.querySelector(".sidebar");
+                const container = document.querySelector(".container");
+
+                if(sidebar.classList.contains("closed")) {
+                    sidebar.classList.remove("closed");
+                    sidebar.classList.add("opened");
+                    container.style.width = "700px";
+                } else {
+                    sidebar.classList.remove("opened");
+                    sidebar.classList.add("closed");
+                    container.style.width = "1290px";
+                }
             }
-        }
+
+            function togglePage(selected) {
+                document.querySelectorAll('.sidebar-page').forEach(item => item.classList.remove('active'));
+                selected.classList.add('active');
+
+                document.querySelectorAll(".page").forEach(page => { page.classList.remove("active"); })
+
+                const page = document.getElementById(selected.dataset.page);
+                if(page) { page.classList.add("active")}
+            }
 
         const API_URL = 'http://localhost:5290/api';
         
@@ -878,7 +1035,7 @@
     });
 }
 
-        async function openProfileModal() {
+    async function openProfileModal() {
     // Get initials
     const initials = currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
     document.getElementById('profileInitials').textContent = initials.toUpperCase();
