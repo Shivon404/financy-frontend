@@ -30,19 +30,153 @@
         </ul>
         </div>
 
-        <div class="container">
-            <div id="UserManagement" class = "page active">
-                <div class="section">
-                    Hello
+<div class="container">
+    <div id="UserManagement" class="page active">
+        <!-- Header Section -->
+        <div class="user-mgmt-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="color: var(--primary)">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <h2>User Management</h2>
+                </div>
+                <div class="user-count-badge">
+                    <span>Total Users:</span>
+                    <span id="totalUserCount">0</span>
                 </div>
             </div>
 
-            <div id="CategoryManagement" class = "page">
-                <div class="section">
-                    <!-- di sa nako send ang part nako dinhi aghhh -->
+            <!-- Search Box -->
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search by name, email, or student ID...">
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="section users-table-section">
+            <div id="loadingState" class="loading">
+                Loading users...
+            </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">👥</div>
+                <p>No users found</p>
+            </div>
+
+            <table id="usersTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Student ID</th>
+                        <th>Allowance</th>
+                        <th style="text-align: center;">Status</th>
+                        <th style="text-align: center;">Statistics</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Users will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Other pages remain the same -->
+    <div id="CategoryManagement" class="page">
+        <div class="section">
+            <!-- di sa nako send ang part nako dinhi aghhh -->
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div id="editUserModal" class="modal">
+    <div class="modal-content">
+        <h2>✏️ Edit User</h2>
+
+        <!-- User Statistics -->
+        <div class="user-stats" id="userStatsSection" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="statExpenses">0</div>
+                    <div class="stat-label">Expenses</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statSpent">₱0</div>
+                    <div class="stat-label">Total Spent</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statBudgets">0</div>
+                    <div class="stat-label">Budgets</div>
                 </div>
             </div>
         </div>
+
+        <form id="editUserForm">
+            <input type="hidden" id="editUserId">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" id="editFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="editLastName" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="editEmail" required>
+            </div>
+
+            <div class="form-group">
+                <label>Student ID</label>
+                <input type="text" id="editStudentId" placeholder="Optional">
+            </div>
+
+            <div class="form-group">
+                <label>Monthly Allowance *</label>
+                <input type="number" id="editAllowance" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label>Status *</label>
+                <select id="editStatus">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>New Password (Leave blank to keep current)</label>
+                <input type="password" id="editPassword" placeholder="Enter new password (min 6 characters)">
+            </div>
+
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="editConfirmPassword" placeholder="Confirm new password">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div id="addCategoryModal" class="modal">
     <div class="modal-content">
@@ -174,6 +308,213 @@
         <!--  -->
 
         <script>
+
+            let allUsers = [];
+
+           async function loadUsersManagement() {
+                try {
+                    document.getElementById('loadingState').style.display = 'block';
+                    document.getElementById('usersTable').style.display = 'none';
+                    document.getElementById('emptyState').style.display = 'none';
+
+                    const response = await fetch(`${API_URL}/admin/users`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        allUsers = data.users.filter(u => !u.email.endsWith('@admin.com'));
+                        document.getElementById('totalUserCount').textContent = allUsers.length;
+                        displayUsers(allUsers);
+                    }
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    showAlert('Error', 'Failed to load users');
+                } finally {
+                    document.getElementById('loadingState').style.display = 'none';
+                }
+            }
+
+    function displayUsers(users) {
+        const tbody = document.getElementById('usersTableBody');
+
+        if (users.length === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('usersTable').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('usersTable').style.display = 'table';
+
+        tbody.innerHTML = users.map(user => {
+            const initials = (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
+            const status = user.status || 'Active';
+            const statusClass = status === 'Active' ? 'active' : 'inactive';
+
+            return `
+            <tr>
+                <td>
+                    <div class="user-info">
+                        <div class="user-avatar">${initials}</div>
+                        <div class="user-details">
+                            <h4>${user.firstName} ${user.lastName}</h4>
+                            <p>ID: ${user.userId}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>${user.email}</td>
+                <td>${user.studentId || '-'}</td>
+                <td>₱${parseFloat(user.monthlyAllowance).toFixed(2)}</td>
+                <td style="text-align: center;">
+                    <span class="status-badge ${statusClass}">${status}</span>
+                </td>
+                <td style="text-align: center;">
+                    <div class="stats-pill" id="stats-${user.userId}">
+                        <span style="color: var(--text-secondary);">Loading...</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" onclick="openEditUserModal(${user.userId})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteUserAccount(${user.userId}, '${user.firstName} ${user.lastName}')">Delete</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        }).join('');
+
+        // Load statistics for each user
+        users.forEach(user => loadUserStatistics(user.userId));
+    }
+
+            async function loadUserStatistics(userId) {
+                try {
+                    const response = await fetch(`${API_URL}/auth/user-statistics/${userId}`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const statsElement = document.getElementById(`stats-${userId}`);
+                        if (statsElement) {
+                            statsElement.innerHTML = `
+                    <strong>${data.stats.totalExpenses}</strong> expenses • 
+                    <strong>₱${parseFloat(data.stats.totalSpent).toFixed(0)}</strong>
+                `;
+                        }
+                    } else {
+                        const statsElement = document.getElementById(`stats-${userId}`);
+                        if (statsElement) {
+                            statsElement.innerHTML = `<strong>0</strong> expenses • <strong>₱0</strong>`;
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error loading stats for user ${userId}:`, error);
+                    const statsElement = document.getElementById(`stats-${userId}`);
+                    if (statsElement) {
+                        statsElement.innerHTML = `<strong>0</strong> expenses • <strong>₱0</strong>`;
+                    }
+                }
+            }
+
+    async function openEditUserModal(userId) {
+        console.log('Opening edit modal for user:', userId);
+
+        const user = allUsers.find(u => u.userId === userId);
+        if (!user) {
+            showAlert('❌ Error', 'User not found');
+            return;
+        }
+
+        console.log('Found user:', user);
+
+        // Populate form fields
+        document.getElementById('editUserId').value = user.userId;
+        document.getElementById('editFirstName').value = user.firstName;
+        document.getElementById('editLastName').value = user.lastName;
+        document.getElementById('editEmail').value = user.email;
+        document.getElementById('editStudentId').value = user.studentId || '';
+        document.getElementById('editAllowance').value = user.monthlyAllowance;
+        document.getElementById('editStatus').value = user.status || 'Active';
+        document.getElementById('editPassword').value = '';
+        document.getElementById('editConfirmPassword').value = '';
+
+        // Load and display user statistics
+        try {
+            const response = await fetch(`${API_URL}/auth/user-statistics/${userId}`);
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('statExpenses').textContent = data.stats.totalExpenses;
+                document.getElementById('statSpent').textContent = `₱${parseFloat(data.stats.totalSpent).toFixed(2)}`;
+                document.getElementById('statBudgets').textContent = data.stats.totalBudgets;
+            } else {
+                document.getElementById('statExpenses').textContent = '0';
+                document.getElementById('statSpent').textContent = '₱0';
+                document.getElementById('statBudgets').textContent = '0';
+            }
+            document.getElementById('userStatsSection').style.display = 'block';
+        } catch (error) {
+            console.error('Error loading user statistics:', error);
+            document.getElementById('statExpenses').textContent = '0';
+            document.getElementById('statSpent').textContent = '₱0';
+            document.getElementById('statBudgets').textContent = '0';
+            document.getElementById('userStatsSection').style.display = 'block';
+        }
+
+        document.getElementById('editUserModal').classList.add('active');
+    }
+
+
+           function closeEditModal() {
+                document.getElementById('editUserModal').classList.remove('active');
+                // Clear password fields
+                document.getElementById('editPassword').value = '';
+                document.getElementById('editConfirmPassword').value = '';
+            }
+
+    async function deleteUserAccount(userId, userName) {
+        console.log('Delete initiated for user:', userId, userName);
+
+        showConfirm(
+            '⚠️ Delete User',
+            `WARNING: Are you sure you want to delete ${userName}?\n\nThis will permanently delete:\n- User account\n- All expenses\n- All budgets\n\nThis action CANNOT be undone!`,
+            async () => {
+                try {
+                    console.log('Making DELETE request to:', `${API_URL}/auth/admin-delete-user/${userId}`);
+
+                    const response = await fetch(`${API_URL}/auth/admin-delete-user/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    console.log('Delete response status:', response.status);
+
+                    // Check if response is ok before parsing JSON
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Delete error response:', errorText);
+                        showAlert('❌ Error', `Server error: ${response.status} - ${errorText}`);
+                        return;
+                    }
+
+                    const data = await response.json();
+                    console.log('Delete response data:', data);
+
+                    if (data.success) {
+                        showAlert('✅ Success', 'User deleted successfully!');
+                        await loadUsersManagement();
+                    } else {
+                        showAlert('❌ Error', data.message || 'Failed to delete user');
+                    }
+                } catch (error) {
+                    console.error('Delete error details:', error);
+                    showAlert('❌ Error', `An error occurred: ${error.message}`);
+                }
+            }
+        );
+    }
+                
+
             function openAddCategoryModal() {
     document.getElementById('addCategoryModal').classList.add('active');
 }
@@ -197,15 +538,22 @@ function closeAddCategoryModal() {
                 }
             }
 
-            function togglePage(selected) {
-                document.querySelectorAll('.sidebar-page').forEach(item => item.classList.remove('active'));
-                selected.classList.add('active');
+  function togglePage(selected) {
+        document.querySelectorAll('.sidebar-page').forEach(item => item.classList.remove('active'));
+        selected.classList.add('active');
 
-                document.querySelectorAll(".page").forEach(page => { page.classList.remove("active"); })
+        document.querySelectorAll(".page").forEach(page => { page.classList.remove("active"); })
 
-                const page = document.getElementById(selected.dataset.page);
-                if(page) { page.classList.add("active")}
+        const page = document.getElementById(selected.dataset.page);
+        if (page) {
+            page.classList.add("active");
+
+            // Load users when User Management page is opened
+            if (selected.dataset.page === 'UserManagement') {
+                loadUsersManagement();
             }
+        }
+    }
 
         const API_URL = 'http://localhost:5290/api';
         
@@ -1093,10 +1441,15 @@ async function loadProfileStats() {
 
 function switchToEditMode() {
     // Populate edit fields
-    document.getElementById('editFirstName').value = currentUser.firstName;
-    document.getElementById('editLastName').value = currentUser.lastName;
-    document.getElementById('editStudentId').value = currentUser.studentId || '';
-    document.getElementById('editEmail').value = currentUser.email;
+        document.getElementById('editUserId').value = user.userId;
+    document.getElementById('editFirstName').value = user.firstName;
+    document.getElementById('editLastName').value = user.lastName;
+    document.getElementById('editEmail').value = user.email;
+    document.getElementById('editStudentId').value = user.studentId || '';
+    document.getElementById('editAllowance').value = user.monthlyAllowance;
+    document.getElementById('editStatus').value = user.status || 'Active';
+    document.getElementById('editPassword').value = '';
+    document.getElementById('editConfirmPassword').value = '';
     
     // Switch views
     document.getElementById('profileViewMode').style.display = 'none';
@@ -1278,6 +1631,190 @@ document.getElementById('promptInput').addEventListener('keypress', function(e) 
         submitPrompt();
     }
 });
+
+    // Setup search filter for users
+    if (document.getElementById('searchInput')) {
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allUsers.filter(user =>
+                user.firstName.toLowerCase().includes(searchTerm) ||
+                user.lastName.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm) ||
+                (user.studentId && user.studentId.toLowerCase().includes(searchTerm))
+            );
+            displayUsers(filtered);
+        });
+    }
+
+    // Handle edit user form submission
+    document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const password = document.getElementById('editPassword').value.trim();
+        const confirmPassword = document.getElementById('editConfirmPassword').value.trim();
+
+        // Validate passwords if provided
+        if (password && password !== confirmPassword) {
+            showAlert('❌ Error', 'Passwords do not match!');
+            return;
+        }
+
+        if (password && password.length < 6) {
+            showAlert('❌ Error', 'Password must be at least 6 characters long!');
+            return;
+        }
+
+        const userData = {
+            userId: parseInt(document.getElementById('editUserId').value),
+            email: document.getElementById('editEmail').value.trim(),
+            firstName: document.getElementById('editFirstName').value.trim(),
+            lastName: document.getElementById('editLastName').value.trim(),
+            studentId: document.getElementById('editStudentId').value.trim() || null,
+            monthlyAllowance: parseFloat(document.getElementById('editAllowance').value),
+            status: document.getElementById('editStatus').value,
+            password: password || null
+        };
+
+        // Validate required fields
+        if (!userData.firstName || !userData.lastName || !userData.email) {
+            showAlert('❌ Error', 'Please fill in all required fields!');
+            return;
+        }
+
+        if (userData.monthlyAllowance <= 0) {
+            showAlert('❌ Error', 'Monthly allowance must be greater than 0!');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/auth/admin-update-user`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showAlert('✅ Success', 'User updated successfully!');
+                closeEditModal();
+                await loadUsersManagement();
+            } else {
+                showAlert('❌ Error', data.message || 'Failed to update user');
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+            showAlert('❌ Error', 'An error occurred while updating the user');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+            const editForm = document.getElementById('editUserForm');
+            if (editForm) {
+                editForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    console.log('Edit form submitted');
+
+                    const password = document.getElementById('editPassword').value.trim();
+                    const confirmPassword = document.getElementById('editConfirmPassword').value.trim();
+
+                    // Validate passwords if provided
+                    if (password && password !== confirmPassword) {
+                        showAlert('❌ Error', 'Passwords do not match!');
+                        return;
+                    }
+
+                    if (password && password.length < 6) {
+                        showAlert('❌ Error', 'Password must be at least 6 characters long!');
+                        return;
+                    }
+
+                    const userData = {
+                        userId: parseInt(document.getElementById('editUserId').value),
+                        email: document.getElementById('editEmail').value.trim(),
+                        firstName: document.getElementById('editFirstName').value.trim(),
+                        lastName: document.getElementById('editLastName').value.trim(),
+                        studentId: document.getElementById('editStudentId').value.trim() || null,
+                        monthlyAllowance: parseFloat(document.getElementById('editAllowance').value),
+                        status: document.getElementById('editStatus').value,
+                        password: password || null
+                    };
+
+                    console.log('Sending user data:', userData);
+
+                    // Validate required fields
+                    if (!userData.firstName || !userData.lastName || !userData.email) {
+                        showAlert('❌ Error', 'Please fill in all required fields!');
+                        return;
+                    }
+
+                    if (isNaN(userData.monthlyAllowance) || userData.monthlyAllowance <= 0) {
+                        showAlert('❌ Error', 'Monthly allowance must be greater than 0!');
+                        return;
+                    }
+
+                    try {
+                        console.log('Making PUT request to:', `${API_URL}/auth/admin-update-user`);
+
+                        const response = await fetch(`${API_URL}/auth/admin-update-user`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(userData)
+                        });
+
+                        console.log('Update response status:', response.status);
+
+                        // Check if response is ok before parsing JSON
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Update error response:', errorText);
+                            showAlert('❌ Error', `Server error: ${response.status} - ${errorText}`);
+                            return;
+                        }
+
+                        const data = await response.json();
+                        console.log('Update response data:', data);
+
+                        if (data.success) {
+                            showAlert('✅ Success', 'User updated successfully!');
+                            closeEditModal();
+                            await loadUsersManagement();
+                        } else {
+                            showAlert('❌ Error', data.message || 'Failed to update user');
+                        }
+                    } catch (error) {
+                        console.error('Update error details:', error);
+                        showAlert('❌ Error', `An error occurred: ${error.message}`);
+                    }
+                });
+            }
+        });
+
+        async function testAPIConnection() {
+                try {
+                    console.log('Testing API connection to:', API_URL);
+                    const response = await fetch(`${API_URL}/admin/users`);
+                    console.log('API test response:', response.status);
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('API test data:', data);
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('API connection test failed:', error);
+                    return false;
+                }
+            }
+            
+    // Load users on initial page load if UserManagement is active
+    if (document.getElementById('UserManagement') && document.getElementById('UserManagement').classList.contains('active')) {
+        loadUsersManagement();
+    }
+
 
     </script>
 </body>

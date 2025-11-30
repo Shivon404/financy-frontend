@@ -223,8 +223,9 @@ body {
     width: 80px;
     height: auto;
 }
+
 img {
-    border:
+    border :
 }
 
 .sidebar-list {
@@ -869,5 +870,376 @@ li {
 
     .chart-container {
         height: 250px;
+    }
+}
+
+/* ===========================
+   USER MANAGEMENT STYLES
+   =========================== */
+
+.user-mgmt-header {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-title h2 {
+    color: var(--text-primary);
+    font-size: 24px;
+    margin: 0;
+}
+
+.user-count-badge {
+    background: var(--bg-main);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.user-count-badge span:first-child {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.user-count-badge span:last-child {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border: 2px solid rgba(46, 196, 113, 0.2);
+    border-radius: 10px;
+    font-size: 14px;
+    background: var(--bg-main);
+    color: var(--text-primary);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.users-table-section {
+    overflow-x: auto;
+}
+
+.users-table-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table-section thead tr {
+    border-bottom: 2px solid var(--bg-main);
+}
+
+.users-table-section th {
+    padding: 15px;
+    text-align: left;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.users-table-section th:last-child {
+    text-align: right;
+}
+
+.users-table-section tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background 0.3s;
+}
+
+body.dark-mode .users-table-section tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.users-table-section tbody tr:hover {
+    background: var(--bg-main);
+}
+
+.users-table-section td {
+    padding: 15px;
+    color: var(--text-primary);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.user-details h4 {
+    font-size: 15px;
+    margin-bottom: 3px;
+    color: var(--text-primary);
+}
+
+.user-details p {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-badge.active {
+    background: rgba(40, 167, 69, 0.2);
+    color: var(--success);
+}
+
+.status-badge.inactive {
+    background: rgba(220, 53, 69, 0.2);
+    color: var(--danger);
+}
+
+.stats-pill {
+    background: var(--bg-main);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.stats-pill strong {
+    color: var(--primary);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.btn-flag {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-flag:hover {
+    background: #e0a800;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+/* User Statistics in Modal */
+.user-stats {
+    background: var(--bg-main);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Form Row for side-by-side inputs */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-top {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .user-count-badge {
+        width: 100%;
+        text-align: center;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .users-table-section {
+        overflow-x: scroll;
+    }
+
+    .users-table-section table {
+        min-width: 800px;
+    }
+}
+
+.status-badge.active {
+    background: rgba(46, 196, 113, 0.15);
+    color: #28a460;
+    border: 1px solid rgba(46, 196, 113, 0.3);
+    font-weight: 600;
+}
+
+.status-badge.inactive {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    font-weight: 600;
+}
+
+/* Edit Button - Green Border Style */
+.btn-edit {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 196, 113, 0.3);
+}
+
+/* Delete Button - Keep Red */
+.btn-danger {
+    background: var(--danger);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Loading and Empty States */
+.loading {
+    text-align: center;
+    padding: 60px 40px;
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.loading::after {
+    content: '...';
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+
+    0%,
+    20% {
+        content: '.';
+    }
+
+    40% {
+        content: '..';
+    }
+
+    60%,
+    100% {
+        content: '...';
     }
 }
