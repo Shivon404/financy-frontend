@@ -1,573 +1,576 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ADMIN FINANCY</title>
-        <link rel="stylesheet" href="styles/admin.css"> 
-        <link href='https://cdn.boxicons.com/3.0.5/fonts/basic/boxicons.min.css' rel='stylesheet'>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </head>
-    <body>
-        <div class="navbar">
-        
-            <div class="user-info">
-                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-                <span id="userName" class="user-name-btn" onclick="openProfileModal()">Loading...</span>
-                <button class="logout-btn" onclick="logout()">Logout</button>
-            </div>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN FINANCY</title>
+    <link rel="stylesheet" href="styles/admin.css"> 
+    <link href='https://cdn.boxicons.com/3.0.5/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <div class="sidebar closed">
-        <span class="sidebar-hdr" onclick = "toggleSideBar()">
+</head>
+<body>
+    <div class="navbar">
+        <div class="user-info">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <span id="userName" class="user-name-btn" onclick="openProfileModal()">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="sidebar closed">
+        <span class="sidebar-hdr" onclick="toggleSideBar()">
             <img id="logo" src="styles/images/financylogo.png" alt="Financy Logo">
             FINANCY
         </span>
         <ul class="sidebar-list">
-            <li class="sidebar-page active" data-page = "UserManagement"onclick = "togglePage(this)"><i class='bxr bxs-user'></i> Manage Users</li>
-            <li class="sidebar-page" data-page = "CategoryManagement" onclick = "togglePage(this)"><i class='bxr bx-categories bx-rotate-90 bx-flip-horizontal'></i> Manage Categories</li>
-            <!-- <li class="sidebar-page inactive" id = "ProfilesManagement  " onclick = "togglePage"><i class='bxr bxs-user-square bx-rotate-90 bx-flip-horizontal'></i> Manage Profile</li> -->
+            <li class="sidebar-page active" data-page="UserManagement" onclick="togglePage(this)"><i class='bxr bxs-user'></i> Manage Users</li>
+            <li class="sidebar-page" data-page="CategoryManagement" onclick="togglePage(this)"><i class='bxr bx-categories bx-rotate-90 bx-flip-horizontal'></i> Manage Categories</li>
         </ul>
-        </div>
+    </div>
 
-<div class="container">
-    <div id="UserManagement" class="page active">
-        <!-- Header Section -->
-        <div class="user-mgmt-header">
-            <div class="header-top">
-                <div class="header-title">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        style="color: var(--primary)">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    <div class="container">
+        <div id="UserManagement" class="page active">
+            <div class="user-mgmt-header">
+                <div class="header-top">
+                    <div class="header-title">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary)">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <h2>User Management</h2>
+                    </div>
+                    <div class="user-count-badge">
+                        <span>Total Users:</span>
+                        <span id="totalUserCount">0</span>
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
                     </svg>
-                    <h2>User Management</h2>
-                </div>
-                <div class="user-count-badge">
-                    <span>Total Users:</span>
-                    <span id="totalUserCount">0</span>
+                    <input type="text" id="searchInput" placeholder="Search by name, email, or student ID...">
                 </div>
             </div>
 
-            <!-- Search Box -->
-            <div class="search-box">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input type="text" id="searchInput" placeholder="Search by name, email, or student ID...">
+            <div class="section users-table-section">
+                <div id="loadingState" class="loading">Loading users...</div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">👥</div>
+                    <p>No users found</p>
+                </div>
+
+                <table id="usersTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Student ID</th>
+                            <th>Allowance</th>
+                            <th style="text-align: center;">Status</th>
+                            <th style="text-align: center;">Statistics</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- users -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Users Table -->
-        <div class="section users-table-section">
-            <div id="loadingState" class="loading">
-                Loading users...
-            </div>
+        <div id="CategoryManagement" class="page">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Category Management</h2>
+                    <button class="btn" onclick="openAddCategoryModal()">Add Category</button>
+                </div>
 
-            <div id="emptyState" class="empty-state" style="display: none;">
-                <div class="empty-state-icon">👥</div>
-                <p>No users found</p>
-            </div>
+                <div class="category-stats">
+                    <div class="category-stat-card">
+                        <h4>Total Categories</h4>
+                        <div class="stat-value" id="totalCategoriesCount">0</div>
+                    </div>
+                    <div class="category-stat-card">
+                        <h4>Active Categories</h4>
+                        <div class="stat-value" id="activeCategoriesCount">0</div>
+                    </div>
+                    <div class="category-stat-card">
+                        <h4>Total Usage</h4>
+                        <div class="stat-value" id="totalUsageCount">0</div>
+                    </div>
+                </div>
 
-            <table id="usersTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Email</th>
-                        <th>Student ID</th>
-                        <th>Allowance</th>
-                        <th style="text-align: center;">Status</th>
-                        <th style="text-align: center;">Statistics</th>
-                        <th style="text-align: right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTableBody">
-                    <!-- Users will be loaded here -->
-                </tbody>
-            </table>
+                <div class="categories">
+                    <!-- Insert Categories -->
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Other pages remain the same -->
-    <div id="CategoryManagement" class="page">
-        <div class="section">
-            <!-- di sa nako send ang part nako dinhi aghhh -->
-        </div>
-    </div>
-</div>
 
-<!-- Edit User Modal -->
-<div id="editUserModal" class="modal">
-    <div class="modal-content">
-        <h2>✏️ Edit User</h2>
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <h2 id="addCategoryModalTitle">Add Category</h2>
+            <div class="form-group">
+                <label>Category Name</label>
+                <input type="text" id="CategoryName" placeholder="eg. Food & Dining">
+            </div>
 
-        <!-- User Statistics -->
-        <div class="user-stats" id="userStatsSection" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value" id="statExpenses">0</div>
-                    <div class="stat-label">Expenses</div>
+            <div class="form-group">
+                <label>Select Icon</label>
+                <div class="icon-selector" id="idSelector">
+                    <!-- Icons -->
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statSpent">₱0</div>
-                    <div class="stat-label">Total Spent</div>
+
+                <div class="selected-preview" id="selectedPreview" style="display:none;">
+                    <div class="preview-icon" id="previewIcon">🍔</div>
+                    <div>
+                        <div style="font-weight:600;" id="previewName">Selected</div>
+                        <div style="font-size:13px;color:var(--text-secondary);">Icon preview</div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statBudgets">0</div>
-                    <div class="stat-label">Budgets</div>
-                </div>
-            </div>
-        </div>
-
-        <form id="editUserForm">
-            <input type="hidden" id="editUserId">
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>First Name *</label>
-                    <input type="text" id="editFirstName" required>
-                </div>
-                <div class="form-group">
-                    <label>Last Name *</label>
-                    <input type="text" id="editLastName" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Email *</label>
-                <input type="email" id="editEmail" required>
-            </div>
-
-            <div class="form-group">
-                <label>Student ID</label>
-                <input type="text" id="editStudentId" placeholder="Optional">
-            </div>
-
-            <div class="form-group">
-                <label>Monthly Allowance *</label>
-                <input type="number" id="editAllowance" step="0.01" min="0" required>
-            </div>
-
-            <div class="form-group">
-                <label>Status *</label>
-                <select id="editStatus">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>New Password (Leave blank to keep current)</label>
-                <input type="password" id="editPassword" placeholder="Enter new password (min 6 characters)">
-            </div>
-
-            <div class="form-group">
-                <label>Confirm New Password</label>
-                <input type="password" id="editConfirmPassword" placeholder="Confirm new password">
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id="addCategoryModal" class="modal">
-    <div class="modal-content">
-        <h2>Add Category</h2>
-        <button class="btn btn-secondary" onclick="closeAddCategoryModal()">Close</button>
-    </div>
-</div>
-
-    <!-- Profile Modal -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <h2>👤 My Profile</h2>
-        
-        <!-- View Mode -->
-        <div id="profileViewMode">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
-                    <span id="profileInitials" style="font-size: 36px; font-weight: bold; color: white;">JD</span>
-                </div>
-            </div>
-            
-            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
-                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Full Name</label>
-                <div id="profileFullName" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
-            </div>
-            
-            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
-                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Email</label>
-                <div id="profileEmail" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
-            </div>
-            
-            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
-                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Student ID</label>
-                <div id="profileStudentId" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
-            </div>
-            
-            <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
-                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Monthly Allowance</label>
-                <div id="profileAllowance" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
-            </div>
-            
-            <div style="padding: 15px 0;">
-                <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Member Since</label>
-                <div id="profileMemberSince" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-                <div style="background: var(--bg-main); padding: 20px; border-radius: 10px; text-align: center;">
-                    <div id="totalExpensesCount" style="font-size: 32px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">0</div>
-                    <div style="font-size: 13px; color: var(--text-secondary);">Total Expenses</div>
-                </div>
-                <div style="background: var(--bg-main); padding: 20px; border-radius: 10px; text-align: center;">
-                    <div id="totalBudgetsCount" style="font-size: 32px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">0</div>
-                    <div style="font-size: 13px; color: var(--text-secondary);">Active Budgets</div>
-                </div>
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn btn-danger" onclick="confirmDeleteAccount()" style="flex: 0 0 auto;">Delete Account</button>
-                <button class="btn btn-secondary" onclick="switchToEditMode()">Edit Profile</button>
-                <button class="btn" onclick="closeProfileModal()">Close</button>
+                <button class="btn btn-secondary" onclick="closeAddCategoryModal()">Close</button>
+                <button class="btn" id="saveCategoryBtn" onclick="submitAddCategory()">Save Category</button>
             </div>
         </div>
+    </div>
 
-        <!-- Edit Mode -->
-            <div id="profileEditMode" style="display: none;">
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" id="editFirstName" placeholder="Juan" />
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <h2>✏️ Edit User</h2>
+
+            <div class="user-stats" id="userStatsSection" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statExpenses">0</div>
+                        <div class="stat-label">Expenses</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statSpent">₱0</div>
+                        <div class="stat-label">Total Spent</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statBudgets">0</div>
+                        <div class="stat-label">Budgets</div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" id="editLastName" placeholder="Dela Cruz" />
+            </div>
+
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" id="editFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" id="editLastName" required>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label>Student ID (Optional)</label>
-                    <input type="text" id="editStudentId" placeholder="2024-12345" />
+                    <label>Email *</label>
+                    <input type="email" id="editEmail" required>
                 </div>
+
                 <div class="form-group">
-                    <label>Email (Cannot be changed)</label>
-                    <input type="email" id="editEmail" disabled style="background: #f0f0f0; cursor: not-allowed;" />
+                    <label>Student ID</label>
+                    <input type="text" id="editStudentId" placeholder="Optional">
+                </div>
+
+                <div class="form-group">
+                    <label>Monthly Allowance *</label>
+                    <input type="number" id="editAllowance" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select id="editStatus">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>New Password (Leave blank to keep current)</label>
+                    <input type="password" id="editPassword" placeholder="Enter new password (min 6 characters)">
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="editConfirmPassword" placeholder="Confirm new password">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <h2>👤 My Profile</h2>
+            
+            <div id="profileViewMode">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <span id="profileInitials" style="font-size: 36px; font-weight: bold; color: white;">AD</span>
+                    </div>
+                </div>
+                
+                <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
+                    <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Full Name</label>
+                    <div id="profileFullName" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+                </div>
+                
+                <div style="padding: 15px 0; border-bottom: 1px solid rgba(102, 126, 234, 0.2);">
+                    <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Email</label>
+                    <div id="profileEmail" style="font-size: 16px; color: var(--text-primary); font-weight: 500;">-</div>
+                </div>
+                
+                <div style="padding: 15px 0;">
+                    <label style="display: block; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px; font-weight: 600;">Role</label>
+                    <div style="font-size: 16px; color: var(--text-primary); font-weight: 500;">Administrator</div>
                 </div>
                 
                 <div class="modal-actions">
-                    <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
-                    <button class="btn" onclick="saveProfileChanges()">Save Changes</button>
+                    <button class="btn" onclick="closeProfileModal()">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
-<div id="confirmModal" class="modal">
-    <div class="modal-content" style="max-width: 400px;">
-        <h2 id="confirmTitle">Confirm Action</h2>
-        <p id="confirmMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
-        <div class="modal-actions">
-            <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
-            <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 id="confirmTitle">Confirm Action</h2>
+            <p id="confirmMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Alert Modal -->
-<div id="alertModal" class="modal">
-    <div class="modal-content" style="max-width: 400px;">
-        <h2 id="alertTitle">Notice</h2>
-        <p id="alertMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
-        <div class="modal-actions">
-            <button class="btn" onclick="closeAlertModal()">OK</button>
+    <!-- ALERT MODAL -->
+    <div id="alertModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 id="alertTitle">Notice</h2>
+            <p id="alertMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeAlertModal()">OK</button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Prompt Modal -->
-<div id="promptModal" class="modal">
-    <div class="modal-content" style="max-width: 400px;">
-        <h2 id="promptTitle">Input Required</h2>
-        <p id="promptMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
-        <div class="form-group">
-            <input type="text" id="promptInput" placeholder="Enter value..." />
-        </div>
-        <div class="modal-actions">
-            <button class="btn btn-secondary" onclick="closePromptModal()">Cancel</button>
-            <button class="btn" onclick="submitPrompt()">Submit</button>
+    <!-- PROMPT MODAL -->
+    <div id="promptModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 id="promptTitle">Input Required</h2>
+            <p id="promptMessage" style="margin: 20px 0; color: var(--text-secondary);"></p>
+            <div class="form-group">
+                <input type="text" id="promptInput" placeholder="Enter value..." />
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closePromptModal()">Cancel</button>
+                <button class="btn" onclick="submitPrompt()">Submit</button>
+            </div>
         </div>
     </div>
-</div>
-        <!--  -->
 
-        <script>
+    <script>
+        const categoryIcons = ['🍔','🍕','☕','🚌','🛒','🎮','🏥','🎓','💡','💻','🏠','🎁','🚗','🍎','🧾','🍩','🍜','🍺','📚','🧸', '💰'];
 
-            let allUsers = [];
+        let categoriesData = [];
+        let selectedIcon = null;
+        let editingCategoryId = null;
 
-           async function loadUsersManagement() {
-                try {
-                    document.getElementById('loadingState').style.display = 'block';
-                    document.getElementById('usersTable').style.display = 'none';
-                    document.getElementById('emptyState').style.display = 'none';
-
-                    const response = await fetch(`${API_URL}/admin/users`);
-                    const data = await response.json();
-
-                    if (data.success) {
-                        allUsers = data.users.filter(u => !u.email.endsWith('@admin.com'));
-                        document.getElementById('totalUserCount').textContent = allUsers.length;
-                        displayUsers(allUsers);
-                    }
-                } catch (error) {
-                    console.error('Error loading users:', error);
-                    showAlert('Error', 'Failed to load users');
-                } finally {
-                    document.getElementById('loadingState').style.display = 'none';
-                }
-            }
-
-    function displayUsers(users) {
-        const tbody = document.getElementById('usersTableBody');
-
-        if (users.length === 0) {
-            document.getElementById('emptyState').style.display = 'block';
-            document.getElementById('usersTable').style.display = 'none';
-            return;
+        function populateIconSelector() {
+            const container = document.getElementById('idSelector');
+            if (!container) return;
+            container.innerHTML = '';
+            categoryIcons.forEach(icon => {
+                const btn = document.createElement('div');
+                btn.className = 'icon-item';
+                btn.textContent = icon;
+                btn.dataset.icon = icon;
+                btn.onclick = () => {
+                    container.querySelectorAll('.icon-item').forEach(i => i.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedIcon = icon;
+                    const preview = document.getElementById('selectedPreview');
+                    const previewIcon = document.getElementById('previewIcon');
+                    const previewName = document.getElementById('previewName');
+                    previewIcon.textContent = icon;
+                    previewName.textContent = document.getElementById('CategoryName').value || 'Selected';
+                    preview.style.display = 'flex';
+                };
+                container.appendChild(btn);
+            });
         }
 
-        document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('usersTable').style.display = 'table';
+        function resetCategoryModal() {
+            editingCategoryId = null;
+            selectedIcon = null;
+            document.getElementById('CategoryName').value = '';
+            const container = document.getElementById('idSelector');
+            if (container) container.querySelectorAll('.icon-item').forEach(i => i.classList.remove('selected'));
+            const preview = document.getElementById('selectedPreview');
+            if (preview) preview.style.display = 'none';
+            document.getElementById('addCategoryModalTitle').textContent = 'Add Category';
+            document.getElementById('saveCategoryBtn').textContent = 'Save Category';
+        }
 
-        tbody.innerHTML = users.map(user => {
-            const initials = (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
-            const status = user.status || 'Active';
-            const statusClass = status === 'Active' ? 'active' : 'inactive';
+        function displayCategories(categories) {
+            const container = document.querySelector('.categories');
+            if (!container) return;
+            categoriesData = categories || [];
+            container.innerHTML = '';
 
-            return `
-            <tr>
-                <td>
-                    <div class="user-info">
-                        <div class="user-avatar">${initials}</div>
-                        <div class="user-details">
-                            <h4>${user.firstName} ${user.lastName}</h4>
-                            <p>ID: ${user.userId}</p>
+            if (!categoriesData.length) {
+                container.innerHTML = `<div class="empty-state" style="padding:20px;"><div class="empty-state-icon">📦</div><p>No categories found.</p></div>`;
+                return;
+            }
+
+            categoriesData.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <div class="category-top">
+                        <div class="category-icon">${cat.icon || '📦'}</div>
+                        <div style="flex:1;">
+                            <div class="category-name">${escapeHtml(cat.name)}</div>
+                            <div class="category-meta">${(cat.usage || 0)} uses • ${cat.active ? 'Active' : 'Inactive'}</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+                            <div class="status-badge-small ${cat.active ? 'status-badge active' : 'status-badge inactive'}" style="font-size:12px;">
+                                ${cat.active ? 'Active' : 'Inactive'}
+                            </div>
                         </div>
                     </div>
-                </td>
-                <td>${user.email}</td>
-                <td>${user.studentId || '-'}</td>
-                <td>₱${parseFloat(user.monthlyAllowance).toFixed(2)}</td>
-                <td style="text-align: center;">
-                    <span class="status-badge ${statusClass}">${status}</span>
-                </td>
-                <td style="text-align: center;">
-                    <div class="stats-pill" id="stats-${user.userId}">
-                        <span style="color: var(--text-secondary);">Loading...</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div style="color:var(--text-secondary);font-size:13px;">ID: ${cat.id ?? '-'}</div>
+                        <div class="category-actions">
+                            <button class="btn btn-edit" onclick="openEditCategoryModal(${cat.id})">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteCategory(${cat.id}, '${escapeJsString(cat.name)}')">Delete</button>
+                        </div>
                     </div>
-                </td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-edit" onclick="openEditUserModal(${user.userId})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteUserAccount(${user.userId}, '${user.firstName} ${user.lastName}')">Delete</button>
-                    </div>
-                </td>
-            </tr>
-        `;
-        }).join('');
-
-        // Load statistics for each user
-        users.forEach(user => loadUserStatistics(user.userId));
-    }
-
-            async function loadUserStatistics(userId) {
-                try {
-                    const response = await fetch(`${API_URL}/auth/user-statistics/${userId}`);
-                    const data = await response.json();
-
-                    if (data.success) {
-                        const statsElement = document.getElementById(`stats-${userId}`);
-                        if (statsElement) {
-                            statsElement.innerHTML = `
-                    <strong>${data.stats.totalExpenses}</strong> expenses • 
-                    <strong>₱${parseFloat(data.stats.totalSpent).toFixed(0)}</strong>
                 `;
-                        }
-                    } else {
-                        const statsElement = document.getElementById(`stats-${userId}`);
-                        if (statsElement) {
-                            statsElement.innerHTML = `<strong>0</strong> expenses • <strong>₱0</strong>`;
-                        }
-                    }
-                } catch (error) {
-                    console.error(`Error loading stats for user ${userId}:`, error);
-                    const statsElement = document.getElementById(`stats-${userId}`);
-                    if (statsElement) {
-                        statsElement.innerHTML = `<strong>0</strong> expenses • <strong>₱0</strong>`;
-                    }
+                container.appendChild(card);
+            });
+        }
+
+        async function loadCategoriesManagement() {
+            const container = document.querySelector('.categories');
+            if (container) container.innerHTML = `<div class="loading">Loading categories...</div>`;
+            try {
+                const res = await fetch(`${API_URL}/admin/categories`);
+                if (!res.ok) {
+                    const txt = await res.text();
+                    console.error('Failed to load categories', res.status, txt);
+                    showAlert('❌ Error', 'Failed to load categories from server');
+                    if (container) container.innerHTML = '';
+                    return;
                 }
+                const data = await res.json();
+                const cats = data.categories || data.data || data;
+                const normalized = (Array.isArray(cats) ? cats : []).map(c => ({
+                    id: c.id ?? c.categoryId ?? c.categoryID ?? c._id ?? c.id,
+                    name: c.name ?? c.categoryName ?? 'Unnamed',
+                    icon: c.icon ?? c.emoji ?? '📦',
+                    usage: c.usage ?? c.count ?? 0,
+                    active: typeof c.active === 'boolean' ? c.active : (c.isActive ?? true)
+                }));
+                updateCategoryStats(normalized);
+                displayCategories(normalized);
+            } catch (err) {
+                console.error('Error loading categories', err);
+                showAlert('❌ Error', 'An error occurred while loading categories');
+                if (container) container.innerHTML = '';
             }
-
-    async function openEditUserModal(userId) {
-        console.log('Opening edit modal for user:', userId);
-
-        const user = allUsers.find(u => u.userId === userId);
-        if (!user) {
-            showAlert('❌ Error', 'User not found');
-            return;
         }
 
-        console.log('Found user:', user);
+        function updateCategoryStats(categories) {
+            const total = categories.length;
+            const activeCount = categories.filter(c => c.active).length;
+            const totalUsage = categories.reduce((s, c) => s + (Number(c.usage) || 0), 0);
+            document.getElementById('totalCategoriesCount').textContent = total;
+            document.getElementById('activeCategoriesCount').textContent = activeCount;
+            document.getElementById('totalUsageCount').textContent = totalUsage;
+        }
 
-        // Populate form fields
-        document.getElementById('editUserId').value = user.userId;
-        document.getElementById('editFirstName').value = user.firstName;
-        document.getElementById('editLastName').value = user.lastName;
-        document.getElementById('editEmail').value = user.email;
-        document.getElementById('editStudentId').value = user.studentId || '';
-        document.getElementById('editAllowance').value = user.monthlyAllowance;
-        document.getElementById('editStatus').value = user.status || 'Active';
-        document.getElementById('editPassword').value = '';
-        document.getElementById('editConfirmPassword').value = '';
+        function openAddCategoryModal() {
+            resetCategoryModal();
+            populateIconSelector();
+            document.getElementById('addCategoryModal').classList.add('active');
+            setTimeout(() => document.getElementById('CategoryName').focus(), 120);
+        }
 
-        // Load and display user statistics
-        try {
-            const response = await fetch(`${API_URL}/auth/user-statistics/${userId}`);
-            const data = await response.json();
+        function openEditCategoryModal(categoryId) {
+            const cat = categoriesData.find(c => Number(c.id) === Number(categoryId));
+            if (!cat) {
+                showAlert('❌ Error', 'Category not found');
+                return;
+            }
+            editingCategoryId = Number(categoryId);
+            document.getElementById('CategoryName').value = cat.name || '';
+            populateIconSelector();
 
-            if (data.success) {
-                document.getElementById('statExpenses').textContent = data.stats.totalExpenses;
-                document.getElementById('statSpent').textContent = `₱${parseFloat(data.stats.totalSpent).toFixed(2)}`;
-                document.getElementById('statBudgets').textContent = data.stats.totalBudgets;
+            selectedIcon = cat.icon || null;
+            const container = document.getElementById('idSelector');
+            if (container && selectedIcon) {
+                container.querySelectorAll('.icon-item').forEach(i => {
+                    if (i.dataset.icon === selectedIcon) i.classList.add('selected');
+                });
+            }
+            const preview = document.getElementById('selectedPreview');
+            const previewIcon = document.getElementById('previewIcon');
+            const previewName = document.getElementById('previewName');
+            if (selectedIcon) {
+                previewIcon.textContent = selectedIcon;
+                previewName.textContent = cat.name;
+                preview.style.display = 'flex';
             } else {
-                document.getElementById('statExpenses').textContent = '0';
-                document.getElementById('statSpent').textContent = '₱0';
-                document.getElementById('statBudgets').textContent = '0';
+                preview.style.display = 'none';
             }
-            document.getElementById('userStatsSection').style.display = 'block';
-        } catch (error) {
-            console.error('Error loading user statistics:', error);
-            document.getElementById('statExpenses').textContent = '0';
-            document.getElementById('statSpent').textContent = '₱0';
-            document.getElementById('statBudgets').textContent = '0';
-            document.getElementById('userStatsSection').style.display = 'block';
+            document.getElementById('addCategoryModalTitle').textContent = 'Edit Category';
+            document.getElementById('saveCategoryBtn').textContent = 'Save Changes';
+            document.getElementById('addCategoryModal').classList.add('active');
         }
 
-        document.getElementById('editUserModal').classList.add('active');
-    }
-
-
-           function closeEditModal() {
-                document.getElementById('editUserModal').classList.remove('active');
-                // Clear password fields
-                document.getElementById('editPassword').value = '';
-                document.getElementById('editConfirmPassword').value = '';
+        async function submitAddCategory() {
+            const name = (document.getElementById('CategoryName').value || '').trim();
+            if (!name) {
+                showAlert('❌ Error', 'Category name is required');
+                return;
+            }
+            if (!selectedIcon) {
+                selectedIcon = categoryIcons[0];
             }
 
-    async function deleteUserAccount(userId, userName) {
-        console.log('Delete initiated for user:', userId, userName);
+            const payload = {
+                name,
+                icon: selectedIcon,
+                active: true
+            };
 
-        showConfirm(
-            '⚠️ Delete User',
-            `WARNING: Are you sure you want to delete ${userName}?\n\nThis will permanently delete:\n- User account\n- All expenses\n- All budgets\n\nThis action CANNOT be undone!`,
-            async () => {
+            if (!editingCategoryId) {
+                // CREATE
                 try {
-                    console.log('Making DELETE request to:', `${API_URL}/auth/admin-delete-user/${userId}`);
-
-                    const response = await fetch(`${API_URL}/auth/admin-delete-user/${userId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
+                    const res = await fetch(`${API_URL}/admin/categories`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
                     });
-
-                    console.log('Delete response status:', response.status);
-
-                    // Check if response is ok before parsing JSON
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error('Delete error response:', errorText);
-                        showAlert('❌ Error', `Server error: ${response.status} - ${errorText}`);
+                    if (!res.ok) {
+                        const txt = await res.text();
+                        console.error('Create category failed', res.status, txt);
+                        showAlert('❌ Error', `Server error: ${res.status} - ${txt}`);
                         return;
                     }
-
-                    const data = await response.json();
-                    console.log('Delete response data:', data);
-
-                    if (data.success) {
-                        showAlert('✅ Success', 'User deleted successfully!');
-                        await loadUsersManagement();
-                    } else {
-                        showAlert('❌ Error', data.message || 'Failed to delete user');
+                    const data = await res.json();
+                    showAlert('✅ Success', 'Category created successfully!');
+                    closeAddCategoryModal();
+                    await loadCategoriesManagement();
+                } catch (err) {
+                    console.error('Create category error', err);
+                    showAlert('❌ Error', 'An error occurred while creating category');
+                }
+            } else {
+                // UPDATE
+                try {
+                    const res = await fetch(`${API_URL}/admin/categories/${editingCategoryId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) {
+                        const txt = await res.text();
+                        console.error('Update category failed', res.status, txt);
+                        showAlert('❌ Error', `Server error: ${res.status} - ${txt}`);
+                        return;
                     }
-                } catch (error) {
-                    console.error('Delete error details:', error);
-                    showAlert('❌ Error', `An error occurred: ${error.message}`);
+                    const data = await res.json();
+                    showAlert('✅ Success', 'Category updated successfully!');
+                    closeAddCategoryModal();
+                    await loadCategoriesManagement();
+                } catch (err) {
+                    console.error('Update category error', err);
+                    showAlert('❌ Error', 'An error occurred while updating category');
                 }
-            }
-        );
-    }
-                
-
-            function openAddCategoryModal() {
-    document.getElementById('addCategoryModal').classList.add('active');
-}
-
-function closeAddCategoryModal() {
-    document.getElementById('addCategoryModal').classList.remove('active');
-}
-            
-            function toggleSideBar() {
-                const sidebar = document.querySelector(".sidebar");
-                const container = document.querySelector(".container");
-
-                if(sidebar.classList.contains("closed")) {
-                    sidebar.classList.remove("closed");
-                    sidebar.classList.add("opened");
-                    container.style.width = "700px";
-                } else {
-                    sidebar.classList.remove("opened");
-                    sidebar.classList.add("closed");
-                    container.style.width = "1290px";
-                }
-            }
-
-  function togglePage(selected) {
-        document.querySelectorAll('.sidebar-page').forEach(item => item.classList.remove('active'));
-        selected.classList.add('active');
-
-        document.querySelectorAll(".page").forEach(page => { page.classList.remove("active"); })
-
-        const page = document.getElementById(selected.dataset.page);
-        if (page) {
-            page.classList.add("active");
-
-            // Load users when User Management page is opened
-            if (selected.dataset.page === 'UserManagement') {
-                loadUsersManagement();
             }
         }
-    }
 
+        function closeAddCategoryModal() {
+            document.getElementById('addCategoryModal').classList.remove('active');
+            resetCategoryModal();
+        }
+
+        async function deleteCategory(categoryId, name) {
+            showConfirm('⚠️ Delete Category', `Are you sure you want to delete "${name}"? This will remove the category and may affect existing records. This action cannot be undone.`, async () => {
+                try {
+                    const res = await fetch(`${API_URL}/admin/categories/${categoryId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (!res.ok) {
+                        const txt = await res.text();
+                        console.error('Delete category failed', res.status, txt);
+                        showAlert('❌ Error', `Server error: ${res.status} - ${txt}`);
+                        return;
+                    }
+                    const data = await res.json();
+                    showAlert('✅ Success', 'Category deleted successfully');
+                    await loadCategoriesManagement();
+                } catch (err) {
+                    console.error('Delete category error', err);
+                    showAlert('❌ Error', 'An error occurred while deleting category');
+                }
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str && str !== 0) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Escape for inline JS string
+        function escapeJsString(s) {
+            if (!s && s !== 0) return '';
+            return String(s).replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        // --- END NEW JS ---
+    </script>
+
+    <script>
+        // ======= Original Script (kept as-is; only minimal hook added at end) =======
         const API_URL = 'http://localhost:5290/api';
-        
         let currentUser = null;
-        let categories = [];
-        let currentExpenseId = null;
-        let currentBudgetId = null;
-        let currentGoalId = null;
-        let allExpenses = [];
-        let allBudgets = [];
-        let savingsGoals = [];
-        let categoryChart, trendChart, monthlyChart;
-        let currentFilter = 'all';
+        let allUsers = [];
+        let confirmCallback = null;
+        let promptCallback = null;
 
+        // Check authentication
         if (!localStorage.getItem('user')) {
             window.location.href = 'index.html';
         } else {
@@ -575,9 +578,8 @@ function closeAddCategoryModal() {
             init();
         }
 
-        async function init() {
+        function init() {
             document.getElementById('userName').textContent = currentUser.fullName;
-            document.getElementById('allowanceAmount').textContent = `₱${currentUser.monthlyAllowance.toFixed(2)}`;
             
             // Load theme preference
             const isDark = localStorage.getItem('darkMode') === 'true';
@@ -585,13 +587,6 @@ function closeAddCategoryModal() {
                 document.body.classList.add('dark-mode');
                 document.querySelector('.theme-toggle').textContent = '☀️';
             }
-            
-            await loadCategories();
-            await loadExpenses();
-            await loadBudgets();
-            await loadGoals();
-            calculateSummary();
-            initCharts();
         }
 
         function toggleTheme() {
@@ -599,970 +594,391 @@ function closeAddCategoryModal() {
             const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem('darkMode', isDark);
             document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
-            
-            // Update charts
-            if (categoryChart) updateChartTheme();
         }
 
-        function switchPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            
-            document.getElementById(`${page}Page`).classList.add('active');
-            event.target.classList.add('active');
-            
-            if (page === 'analytics') {
-                setTimeout(() => {
-                    updateAnalytics();
-                }, 100);
-            } else if (page === 'goals') {
-                displayGoals();
+        function toggleSideBar() {
+            const sidebar = document.querySelector(".sidebar");
+            const container = document.querySelector(".container");
+
+            if(sidebar.classList.contains("closed")) {
+                sidebar.classList.remove("closed");
+                sidebar.classList.add("opened");
+                container.classList.add("sidebar-open");
+            } else {
+                sidebar.classList.remove("opened");
+                sidebar.classList.add("closed");
+                container.classList.remove("sidebar-open");
             }
         }
 
-        async function loadCategories() {
+        function togglePage(selected) {
+            document.querySelectorAll('.sidebar-page').forEach(item => item.classList.remove('active'));
+            selected.classList.add('active');
+
+            document.querySelectorAll(".page").forEach(page => { page.classList.remove("active"); });
+
+            const page = document.getElementById(selected.dataset.page);
+            if (page) {
+                page.classList.add("active");
+
+                // Load users when User Management page is opened
+                if (selected.dataset.page === 'UserManagement') {
+                    loadUsersManagement();
+                }
+            }
+        }
+
+        // USER MANAGEMENT FUNCTIONS
+        async function loadUsersManagement() {
             try {
-                const response = await fetch(`${API_URL}/expense/categories`);
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('usersTable').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+
+                const response = await fetch(`${API_URL}/admin/users`);
                 const data = await response.json();
+
                 if (data.success) {
-                    categories = data.categories;
-                    populateCategorySelects();
+                    allUsers = data.users.filter(u => !u.email.endsWith('@admin.com'));
+                    document.getElementById('totalUserCount').textContent = allUsers.length;
+                    displayUsers(allUsers);
                 }
             } catch (error) {
-                console.error('Error loading categories:', error);
+                console.error('Error loading users:', error);
+                showAlert('Error', 'Failed to load users');
+            } finally {
+                document.getElementById('loadingState').style.display = 'none';
             }
         }
 
-        function populateCategorySelects() {
-            const expenseSelect = document.getElementById('expenseCategory');
-            const budgetSelect = document.getElementById('budgetCategory');
-            
-            expenseSelect.innerHTML = categories.map(c => 
-                `<option value="${c.categoryId}">${c.icon} ${c.categoryName}</option>`
-            ).join('');
-            
-            budgetSelect.innerHTML = categories.map(c => 
-                `<option value="${c.categoryId}">${c.icon} ${c.categoryName}</option>`
-            ).join('');
-        }
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
 
-        async function loadExpenses() {
-            try {
-                const response = await fetch(`${API_URL}/expense/${currentUser.userId}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    allExpenses = data.expenses;
-                    displayExpenses();
-                }
-            } catch (error) {
-                console.error('Error loading expenses:', error);
-            }
-        }
-
-        function filterExpenses(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            displayExpenses();
-        }
-
-        function displayExpenses() {
-            const expenseList = document.getElementById('expenseList');
-            let filtered = [...allExpenses];
-            
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            
-            if (currentFilter === 'today') {
-                filtered = filtered.filter(e => {
-                    const expDate = new Date(e.expenseDate);
-                    return expDate >= today;
-                });
-            } else if (currentFilter === 'week') {
-                const weekAgo = new Date(today);
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = filtered.filter(e => new Date(e.expenseDate) >= weekAgo);
-            } else if (currentFilter === 'month') {
-                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-                filtered = filtered.filter(e => new Date(e.expenseDate) >= monthStart);
-            }
-            
-            if (filtered.length === 0) {
-                expenseList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
-                        <p>No expenses found for this period.</p>
-                    </div>
-                `;
+            if (users.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('usersTable').style.display = 'none';
                 return;
             }
-            
-            expenseList.innerHTML = filtered.slice(0, 20).map(expense => `
-                <div class="expense-item">
-                    <div class="expense-info">
-                        <div class="expense-icon">${expense.categoryIcon}</div>
-                        <div class="expense-details">
-                            <h4>${expense.categoryName}</h4>
-                            <p>${expense.description || 'No description'} • ${formatDate(expense.expenseDate)}</p>
-                        </div>
-                    </div>
-                    <div class="expense-amount">₱${expense.amount.toFixed(2)}</div>
-                    <div class="expense-actions">
-                        <button class="btn btn-secondary" onclick="editExpense(${expense.expenseId})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteExpense(${expense.expenseId})">Delete</button>
-                    </div>
-                </div>
-            `).join('');
-        }
 
-        async function loadBudgets() {
-            try {
-                const response = await fetch(`${API_URL}/budget/${currentUser.userId}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    allBudgets = data.budgets;
-                    displayBudgets();
-                }
-            } catch (error) {
-                console.error('Error loading budgets:', error);
-            }
-        }
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('usersTable').style.display = 'table';
 
-        function displayBudgets() {
-            const budgetList = document.getElementById('budgetList');
-            
-            if (allBudgets.length === 0) {
-                budgetList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💰</div>
-                        <p>No budgets set yet. Create a budget to track your spending!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            budgetList.innerHTML = allBudgets.map(budget => {
-                const percentage = Math.min(budget.spentPercentage, 100);
-                const statusClass = budget.status === 'Over Budget' ? 'over' : 
-                                  budget.status === 'Warning' ? 'warning' : 'on-track';
-                
+            tbody.innerHTML = users.map(user => {
+                const initials = (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
+                const status = user.status || 'Active';
+                const statusClass = status === 'Active' ? 'active' : 'inactive';
+
                 return `
-                    <div class="budget-item">
-                        <div class="budget-header">
-                            <div class="budget-name">
-                                <span style="font-size: 24px">${budget.categoryIcon}</span>
-                                ${budget.categoryName}
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">${initials}</div>
+                            <div class="user-details">
+                                <h4>${user.firstName} ${user.lastName}</h4>
+                                <p>ID: ${user.userId}</p>
                             </div>
-                            <div class="budget-status ${statusClass}">${budget.status}</div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill ${statusClass}" style="width: ${percentage}%"></div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>${user.studentId || '-'}</td>
+                    <td>₱${parseFloat(user.monthlyAllowance).toFixed(2)}</td>
+                    <td style="text-align: center;">
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <div class="stats-pill" id="stats-${user.userId}">
+                            <span style="color: var(--text-secondary);">Loading...</span>
                         </div>
-                        <div class="budget-info">
-                            <span>Spent: ₱${budget.spentAmount.toFixed(2)} / ₱${budget.budgetLimit.toFixed(2)}</span>
-                            <span>Remaining: ₱${budget.remainingAmount.toFixed(2)}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="openEditUserModal(${user.userId})">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteUserAccount(${user.userId}, '${user.firstName} ${user.lastName}')">Delete</button>
                         </div>
-                        <div class="budget-actions">
-                            <button class="btn btn-secondary" onclick="editBudget(${budget.budgetId}, ${budget.categoryId}, ${budget.budgetLimit})">Edit</button>
-                            <button class="btn btn-danger" onclick="deleteBudget(${budget.budgetId})">Delete</button>
-                        </div>
-                    </div>
+                    </td>
+                </tr>
                 `;
             }).join('');
+
+            // Load statistics for each user
+            users.forEach(user => loadUserStatistics(user.userId));
         }
 
-        async function calculateSummary() {
-            const now = new Date();
-            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            
-            const thisMonthExpenses = allExpenses.filter(e => 
-                new Date(e.expenseDate) >= monthStart
+        async function loadUserStatistics(userId) {
+            try {
+                const response = await fetch(`${API_URL}/auth/user-statistics/${userId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const statsElement = document.getElementById(`stats-${userId}`);
+                    if (statsElement) {
+                        statsElement.innerHTML = `
+                            <strong>${data.stats.totalExpenses}</strong> expenses • 
+                            <strong>₱${parseFloat(data.stats.totalSpent).toFixed(0)}</strong>
+                        `;
+                    }
+                } else {
+                    const statsElement = document.getElementById(`stats-${userId}`);
+                    if (statsElement) {
+                        statsElement.innerHTML = `<strong>0</strong> expenses • <strong>₱0</strong>`;
+                    }
+                }
+            } catch (error) {
+                console.error(`Error loading stats for user ${userId}:`, error);
+                const statsElement = document.getElementById(`stats-${userId}`);
+                if (statsElement) {
+                    statsElement.innerHTML = `<strong>0</strong> expenses • <strong>₱0</strong>`;
+                }
+            }
+        }
+
+        async function openEditUserModal(userId) {
+            const user = allUsers.find(u => u.userId === userId);
+            if (!user) {
+                showAlert('❌ Error', 'User not found');
+                return;
+            }
+
+            // Populate form fields
+            document.getElementById('editUserId').value = user.userId;
+            document.getElementById('editFirstName').value = user.firstName;
+            document.getElementById('editLastName').value = user.lastName;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editStudentId').value = user.studentId || '';
+            document.getElementById('editAllowance').value = user.monthlyAllowance;
+            document.getElementById('editStatus').value = user.status || 'Active';
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editConfirmPassword').value = '';
+
+            // Load and display user statistics
+            try {
+                const response = await fetch(`${API_URL}/auth/user-statistics/${userId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('statExpenses').textContent = data.stats.totalExpenses;
+                    document.getElementById('statSpent').textContent = `₱${parseFloat(data.stats.totalSpent).toFixed(2)}`;
+                    document.getElementById('statBudgets').textContent = data.stats.totalBudgets;
+                } else {
+                    document.getElementById('statExpenses').textContent = '0';
+                    document.getElementById('statSpent').textContent = '₱0';
+                    document.getElementById('statBudgets').textContent = '0';
+                }
+                document.getElementById('userStatsSection').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading user statistics:', error);
+                document.getElementById('statExpenses').textContent = '0';
+                document.getElementById('statSpent').textContent = '₱0';
+                document.getElementById('statBudgets').textContent = '0';
+                document.getElementById('userStatsSection').style.display = 'block';
+            }
+
+            document.getElementById('editUserModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editConfirmPassword').value = '';
+        }
+
+        async function deleteUserAccount(userId, userName) {
+            showConfirm(
+                '⚠️ Delete User',
+                `WARNING: Are you sure you want to delete ${userName}?\n\nThis will permanently delete:\n- User account\n- All expenses\n- All budgets\n\nThis action CANNOT be undone!`,
+                async () => {
+                    try {
+                        const response = await fetch(`${API_URL}/auth/admin-delete-user/${userId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Delete error response:', errorText);
+                            showAlert('❌ Error', `Server error: ${response.status} - ${errorText}`);
+                            return;
+                        }
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            showAlert('✅ Success', 'User deleted successfully!');
+                            await loadUsersManagement();
+                        } else {
+                            showAlert('❌ Error', data.message || 'Failed to delete user');
+                        }
+                    } catch (error) {
+                        console.error('Delete error details:', error);
+                        showAlert('❌ Error', `An error occurred: ${error.message}`);
+                    }
+                }
             );
-            
-            const total = thisMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const remaining = currentUser.monthlyAllowance - total;
-            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-            const avgDaily = total / now.getDate();
-            
-            document.getElementById('spentAmount').textContent = `₱${total.toFixed(2)}`;
-            document.getElementById('remainingAmount').textContent = `₱${remaining.toFixed(2)}`;
-            document.getElementById('avgDailySpending').textContent = `₱${avgDaily.toFixed(2)}`;
-            
-            // Calculate trends
-            const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-            const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
-            const lastMonthExpenses = allExpenses.filter(e => {
-                const d = new Date(e.expenseDate);
-                return d >= lastMonth && d <= lastMonthEnd;
-            });
-            const lastMonthTotal = lastMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-            
-            const change = ((total - lastMonthTotal) / (lastMonthTotal || 1)) * 100;
-            const trendClass = change > 0 ? 'down' : 'up';
-            const trendIcon = change > 0 ? '📈' : '📉';
-            
-            document.getElementById('spentTrend').innerHTML = `${trendIcon} ${Math.abs(change).toFixed(1)}% vs last month`;
-            document.getElementById('spentTrend').className = `trend ${trendClass}`;
         }
 
-        async function loadGoals() {
-            // Load from localStorage for now
-            const stored = localStorage.getItem(`goals_${currentUser.userId}`);
-            savingsGoals = stored ? JSON.parse(stored) : [];
-            displayGoals();
+        // CATEGORY MANAGEMENT FUNCTIONS
+        function openAddCategoryModal() {
+            document.getElementById('addCategoryModal').classList.add('active');
         }
 
-        function displayGoals() {
-            const goalsList = document.getElementById('goalsList');
-            
-            if (savingsGoals.length === 0) {
-                goalsList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎯</div>
-                        <p>No savings goals yet. Set a goal to stay motivated!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            goalsList.innerHTML = savingsGoals.map((goal, index) => {
-                const percentage = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
-                const remaining = goal.targetAmount - goal.currentAmount;
-                const daysLeft = Math.ceil((new Date(goal.targetDate) - new Date()) / (1000 * 60 * 60 * 24));
-                
-                return `
-                    <div class="goal-card">
-                        <div class="goal-header">
-                            <div class="goal-name">🎯 ${goal.name}</div>
-                            <div class="goal-amount">₱${goal.currentAmount.toFixed(2)} / ₱${goal.targetAmount.toFixed(2)}</div>
-                        </div>
-                        <div class="goal-progress">
-                            <div class="goal-progress-text">
-                                <span>${percentage.toFixed(1)}% Complete</span>
-                                <span>${daysLeft} days left</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="goal-progress-text" style="margin-top: 10px;">
-                                <span>Remaining: ₱${remaining.toFixed(2)}</span>
-                                <span>Target: ${formatDate(goal.targetDate)}</span>
-                            </div>
-                        </div>
-                        <div class="budget-actions" style="margin-top: 15px;">
-                            <button class="btn" onclick="updateGoalProgress(${index})">Add Savings</button>
-                            <button class="btn btn-secondary" onclick="editGoal(${index})">Edit</button>
-                            <button class="btn btn-danger" onclick="deleteGoal(${index})">Delete</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+        function closeAddCategoryModal() {
+            document.getElementById('addCategoryModal').classList.remove('active');
         }
 
-        function initCharts() {
-            const isDark = document.body.classList.contains('dark-mode');
-            const textColor = isDark ? '#eee' : '#333';
-            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-            
-            Chart.defaults.color = textColor;
-            Chart.defaults.borderColor = gridColor;
+        // PROFILE MODAL FUNCTIONS
+        function openProfileModal() {
+            const initials = currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+            document.getElementById('profileInitials').textContent = initials.toUpperCase();
+            document.getElementById('profileFullName').textContent = currentUser.fullName;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profileModal').classList.add('active');
         }
 
-        function updateAnalytics() {
-            updateCategoryChart();
-            updateTrendChart();
-            updateMonthlyChart();
-            generateInsights();
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
         }
 
-        function updateCategoryChart() {
-            const ctx = document.getElementById('categoryChart');
-            if (!ctx) return;
-            
-            const now = new Date();
-            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            const thisMonthExpenses = allExpenses.filter(e => new Date(e.expenseDate) >= monthStart);
-            
-            const categoryTotals = {};
-            thisMonthExpenses.forEach(exp => {
-                categoryTotals[exp.categoryName] = (categoryTotals[exp.categoryName] || 0) + exp.amount;
-            });
-            
-            const labels = Object.keys(categoryTotals);
-            const data = Object.values(categoryTotals);
-            
-            if (categoryChart) categoryChart.destroy();
-            
-            categoryChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: [
-                            '#667eea', '#764ba2', '#f093fb', '#4facfe',
-                            '#43e97b', '#fa709a', '#fee140', '#30cfd0'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        title: { display: true, text: 'Spending by Category' }
-                    }
-                }
-            });
+        // MODAL UTILITY FUNCTIONS
+        function showAlert(title, message) {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').classList.add('active');
         }
 
-        function updateTrendChart() {
-            const ctx = document.getElementById('trendChart');
-            if (!ctx) return;
-            
-            const last7Days = [];
-            const amounts = [];
-            const now = new Date();
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(now);
-                date.setDate(date.getDate() - i);
-                last7Days.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-                
-                const dayTotal = allExpenses
-                    .filter(e => {
-                        const expDate = new Date(e.expenseDate);
-                        return expDate.toDateString() === date.toDateString();
-                    })
-                    .reduce((sum, e) => sum + e.amount, 0);
-                amounts.push(dayTotal);
-            }
-            
-            if (trendChart) trendChart.destroy();
-            
-            trendChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: last7Days,
-                    datasets: [{
-                        label: 'Daily Spending',
-                        data: amounts,
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: true, text: 'Last 7 Days Trend' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
+        function closeAlertModal() {
+            document.getElementById('alertModal').classList.remove('active');
         }
 
-        function updateMonthlyChart() {
-            const ctx = document.getElementById('monthlyChart');
-            if (!ctx) return;
-            
-            const monthlyData = {};
-            allExpenses.forEach(exp => {
-                const date = new Date(exp.expenseDate);
-                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                monthlyData[key] = (monthlyData[key] || 0) + exp.amount;
-            });
-            
-            const sortedMonths = Object.keys(monthlyData).sort().slice(-6);
-            const labels = sortedMonths.map(m => {
-                const [year, month] = m.split('-');
-                return new Date(year, month - 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-            });
-            const data = sortedMonths.map(m => monthlyData[m]);
-            
-            if (monthlyChart) monthlyChart.destroy();
-            
-            monthlyChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Monthly Spending',
-                        data: data,
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: '#667eea',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: true, text: 'Monthly Spending Comparison' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
+        function showConfirm(title, message, callback) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            confirmCallback = callback;
+            document.getElementById('confirmModal').classList.add('active');
         }
 
-        function generateInsights() {
-            const insights = [];
-            const now = new Date();
-            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            const thisMonthExpenses = allExpenses.filter(e => new Date(e.expenseDate) >= monthStart);
-            const total = thisMonthExpenses.reduce((sum, e) => sum + e.amount, 0);
-            
-            // Insight 1: Budget status
-            const percentSpent = (total / currentUser.monthlyAllowance) * 100;
-            if (percentSpent > 90) {
-                insights.push({
-                    icon: '⚠️',
-                    title: 'Budget Alert',
-                    message: `You've spent ${percentSpent.toFixed(1)}% of your monthly allowance. Consider reducing expenses.`
-                });
-            } else if (percentSpent < 50 && now.getDate() > 20) {
-                insights.push({
-                    icon: '✨',
-                    title: 'Great Job!',
-                    message: `You're on track! Only ${percentSpent.toFixed(1)}% of your budget used.`
-                });
-            }
-            
-            // Insight 2: Top category
-            const categoryTotals = {};
-            thisMonthExpenses.forEach(exp => {
-                categoryTotals[exp.categoryName] = (categoryTotals[exp.categoryName] || 0) + exp.amount;
-            });
-            const topCategory = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
-            if (topCategory) {
-                insights.push({
-                    icon: '📊',
-                    title: 'Top Spending Category',
-                    message: `${topCategory[0]} accounts for ₱${topCategory[1].toFixed(2)} (${((topCategory[1]/total)*100).toFixed(1)}%) of your spending.`
-                });
-            }
-            
-            // Insight 3: Savings potential
-            const remaining = currentUser.monthlyAllowance - total;
-            const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate();
-            if (remaining > 0 && daysLeft > 0) {
-                insights.push({
-                    icon: '💰',
-                    title: 'Savings Potential',
-                    message: `You have ₱${remaining.toFixed(2)} remaining. That's ₱${(remaining/daysLeft).toFixed(2)} per day for ${daysLeft} days.`
-                });
-            }
-            
-            const insightsList = document.getElementById('insightsList');
-            insightsList.innerHTML = insights.map(insight => `
-                <div class="insight-card">
-                    <h3>${insight.icon} ${insight.title}</h3>
-                    <p>${insight.message}</p>
-                </div>
-            `).join('');
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            confirmCallback = null;
         }
 
-        function updateChartTheme() {
-            const isDark = document.body.classList.contains('dark-mode');
-            const textColor = isDark ? '#eee' : '#333';
-            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-            
-            Chart.defaults.color = textColor;
-            Chart.defaults.borderColor = gridColor;
-            
-            if (categoryChart) categoryChart.destroy();
-            if (trendChart) trendChart.destroy();
-            if (monthlyChart) monthlyChart.destroy();
-            
-            updateAnalytics();
+        function confirmAction() {
+            if (confirmCallback) confirmCallback();
+            closeConfirmModal();
         }
 
-        // Modal functions
-        function openExpenseModal() {
-            currentExpenseId = null;
-            document.getElementById('expenseModalTitle').textContent = 'Add Expense';
-            document.getElementById('expenseAmount').value = '';
-            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('expenseDescription').value = '';
-            document.getElementById('expenseModal').classList.add('active');
+        function showPrompt(title, message, callback, defaultValue = '') {
+            document.getElementById('promptTitle').textContent = title;
+            document.getElementById('promptMessage').textContent = message;
+            document.getElementById('promptInput').value = defaultValue;
+            promptCallback = callback;
+            document.getElementById('promptModal').classList.add('active');
+            setTimeout(() => document.getElementById('promptInput').focus(), 100);
         }
 
-        function closeExpenseModal() {
-            document.getElementById('expenseModal').classList.remove('active');
+        function closePromptModal() {
+            document.getElementById('promptModal').classList.remove('active');
+            promptCallback = null;
         }
 
-        async function saveExpense() {
-            const categoryId = parseInt(document.getElementById('expenseCategory').value);
-            const amount = parseFloat(document.getElementById('expenseAmount').value);
-            const date = document.getElementById('expenseDate').value;
-            const description = document.getElementById('expenseDescription').value;
-
-            if (!amount || !date) {
-                showAlert('Error', 'Please fill in all required fields');
-                return;
-            }
-
-            try {
-                const expense = {
-                    userId: currentUser.userId,
-                    categoryId,
-                    amount,
-                    expenseDate: date,
-                    description
-                };
-
-                const url = currentExpenseId ? `${API_URL}/expense` : `${API_URL}/expense`;
-                const method = currentExpenseId ? 'PUT' : 'POST';
-                
-                if (currentExpenseId) expense.expenseId = currentExpenseId;
-
-                const response = await fetch(url, {
-                    method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(expense)
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    closeExpenseModal();
-                    await loadExpenses();
-                    await loadBudgets();
-                    calculateSummary();
-                } else {
-                    showAlert('Error', data.message);
-
-                }
-            } catch (error) {
-                showAlert('Error', 'Error saving expense!');
-            }
-        }
-
-        async function editExpense(expenseId) {
-            const expense = allExpenses.find(e => e.expenseId === expenseId);
-            if (expense) {
-                currentExpenseId = expenseId;
-                document.getElementById('expenseModalTitle').textContent = 'Edit Expense';
-                document.getElementById('expenseCategory').value = expense.categoryId;
-                document.getElementById('expenseAmount').value = expense.amount;
-                document.getElementById('expenseDate').value = expense.expenseDate.split('T')[0];
-                document.getElementById('expenseDescription').value = expense.description || '';
-                document.getElementById('expenseModal').classList.add('active');
-            }
-        }
-
-        async function deleteExpense(expenseId) {
-    showConfirm('Delete Expense', 'Are you sure you want to delete this expense?', async () => {
-        try {
-            const response = await fetch(`${API_URL}/expense/${expenseId}/${currentUser.userId}`, {
-                method: 'DELETE'
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                await loadExpenses();
-                await loadBudgets();
-                calculateSummary();
-            } else {
-                showAlert('Error', data.message);
-            }
-        } catch (error) {
-            showAlert('Error', 'Error deleting expense!');
-        }
-    });
-}
-
-        function openBudgetModal() {
-            currentBudgetId = null;
-            document.getElementById('budgetCategory').disabled = false;
-            document.getElementById('budgetLimit').value = '';
-            document.getElementById('budgetModal').querySelector('h2').textContent = 'Set Budget';
-            document.getElementById('budgetModal').classList.add('active');
-        }
-
-        function closeBudgetModal() {
-            document.getElementById('budgetModal').classList.remove('active');
-        }
-
-        async function saveBudget() {
-            const categoryId = parseInt(document.getElementById('budgetCategory').value);
-            const limit = parseFloat(document.getElementById('budgetLimit').value);
-
-            if (!limit || limit <= 0) {
-                showAlert('Error', 'Please enter a valid budget amount');
-                return;
-            }
-
-            try {
-                const now = new Date();
-                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-                const formattedDate = firstDay.toISOString().split('T')[0];
-
-                const budget = {
-                    userId: currentUser.userId,
-                    categoryId,
-                    budgetLimit: limit,
-                    month: formattedDate
-                };
-
-                if (currentBudgetId) budget.budgetId = currentBudgetId;
-
-                const response = await fetch(`${API_URL}/budget`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(budget)
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    closeBudgetModal();
-                    await loadBudgets();
-                    showAlert('Success', currentBudgetId ? 'Budget updated successfully!' : 'Budget created successfully!');
-
-                } else {
-                    showAlert('Error', data.message);
-
-                }
-            } catch (error) {
-                showAlert('Error', 'Error saving expense!');
-            }
-        }
-
-        function editBudget(budgetId, categoryId, currentLimit) {
-            currentBudgetId = budgetId;
-            document.getElementById('budgetCategory').value = categoryId;
-            document.getElementById('budgetCategory').disabled = true;
-            document.getElementById('budgetLimit').value = currentLimit;
-            document.getElementById('budgetModal').querySelector('h2').textContent = 'Edit Budget';
-            document.getElementById('budgetModal').classList.add('active');
-        }
-
-        async function deleteBudget(budgetId) {
-    showConfirm('Delete Budget', 'Are you sure you want to delete this budget?', async () => {
-        try {
-            const response = await fetch(`${API_URL}/budget/${budgetId}/${currentUser.userId}`, {
-                method: 'DELETE'
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                await loadBudgets();
-                showAlert('Success', 'Budget deleted successfully!');
-            } else {
-                showAlert('Error', data.message);
-            }
-        } catch (error) {
-            showAlert('Error', 'Error deleting budget!');
-        }
-    });
-}
-        function openAllowanceModal() {
-            document.getElementById('currentAllowance').textContent = `₱${currentUser.monthlyAllowance.toFixed(2)}`;
-            document.getElementById('newAllowance').value = currentUser.monthlyAllowance;
-            document.getElementById('allowanceModal').classList.add('active');
-        }
-
-        function closeAllowanceModal() {
-            document.getElementById('allowanceModal').classList.remove('active');
-        }
-
-        async function saveAllowance() {
-            const newAllowance = parseFloat(document.getElementById('newAllowance').value);
-
-            if (!newAllowance || newAllowance <= 0) {
-                showAlert('Error', 'Please enter a valid amount');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/auth/update-allowance`, {
-                   
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: currentUser.userId,
-                        monthlyAllowance: newAllowance
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    currentUser.monthlyAllowance = newAllowance;
-                    localStorage.setItem('user', JSON.stringify(currentUser));
-                    document.getElementById('allowanceAmount').textContent = `₱${newAllowance.toFixed(2)}`;
-                    closeAllowanceModal();
-                    calculateSummary();
-                    showAlert('Success', 'Allowance updated successfully!');
-                } else {
-                    showAlert('Error', data.message);
-                }
-            } catch (error) {
-                showAlert('Error', 'Error updating allowance!');
-            }
-        }
-
-        function openGoalModal() {
-            currentGoalId = null;
-            document.getElementById('goalModalTitle').textContent = 'Add Savings Goal';
-            document.getElementById('goalName').value = '';
-            document.getElementById('goalTarget').value = '';
-            document.getElementById('goalDate').value = '';
-            document.getElementById('goalCurrent').value = '0';
-            document.getElementById('goalModal').classList.add('active');
-        }
-
-        function closeGoalModal() {
-            document.getElementById('goalModal').classList.remove('active');
-        }
-
-        function saveGoal() {
-            const name = document.getElementById('goalName').value;
-            const target = parseFloat(document.getElementById('goalTarget').value);
-            const date = document.getElementById('goalDate').value;
-            const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
-
-            if (!name || !target || !date) {
-                showAlert('Error', 'Please fill in all required fields');
-                return;
-            }
-
-            const goal = { name, targetAmount: target, targetDate: date, currentAmount: current };
-
-            if (currentGoalId !== null) {
-                savingsGoals[currentGoalId] = goal;
-            } else {
-                savingsGoals.push(goal);
-            }
-
-            localStorage.setItem(`goals_${currentUser.userId}`, JSON.stringify(savingsGoals));
-            closeGoalModal();
-            displayGoals();
-        }
-
-        function editGoal(index) {
-            currentGoalId = index;
-            const goal = savingsGoals[index];
-            document.getElementById('goalModalTitle').textContent = 'Edit Savings Goal';
-            document.getElementById('goalName').value = goal.name;
-            document.getElementById('goalTarget').value = goal.targetAmount;
-            document.getElementById('goalDate').value = goal.targetDate.split('T')[0];
-            document.getElementById('goalCurrent').value = goal.currentAmount;
-            document.getElementById('goalModal').classList.add('active');
-        }
-
-        function deleteGoal(index) {
-    showConfirm('Delete Goal', 'Are you sure you want to delete this goal?', () => {
-        savingsGoals.splice(index, 1);
-        localStorage.setItem(`goals_${currentUser.userId}`, JSON.stringify(savingsGoals));
-        displayGoals();
-    });
-}
-
-        function updateGoalProgress(index) {
-    showPrompt('Add Savings', 'Enter amount to add to savings:', (amount) => {
-        if (amount && !isNaN(amount)) {
-            const addAmount = parseFloat(amount);
-            savingsGoals[index].currentAmount += addAmount;
-            localStorage.setItem(`goals_${currentUser.userId}`, JSON.stringify(savingsGoals));
-            displayGoals();
-        }
-    });
-}
-
-    async function openProfileModal() {
-    // Get initials
-    const initials = currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
-    document.getElementById('profileInitials').textContent = initials.toUpperCase();
-    
-    // Set profile info
-    document.getElementById('profileFullName').textContent = currentUser.fullName;
-    document.getElementById('profileEmail').textContent = currentUser.email;
-    document.getElementById('profileStudentId').textContent = currentUser.studentId || 'Not provided';
-    document.getElementById('profileAllowance').textContent = `₱${currentUser.monthlyAllowance.toFixed(2)}`;
-    
-    // Format member since date
-    if (currentUser.createdAt) {
-        const date = new Date(currentUser.createdAt);
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('profileMemberSince').textContent = date.toLocaleDateString('en-US', options);
-    } else {
-        document.getElementById('profileMemberSince').textContent = 'N/A';
-    }
-    
-    // Get stats
-    await loadProfileStats();
-    
-    // Show view mode
-    document.getElementById('profileViewMode').style.display = 'block';
-    document.getElementById('profileEditMode').style.display = 'none';
-    
-    document.getElementById('profileModal').classList.add('active');
-}
-
-function closeProfileModal() {
-    document.getElementById('profileModal').classList.remove('active');
-}
-
-async function loadProfileStats() {
-    try {
-        // Get total expenses count
-        const expenseResponse = await fetch(`${API_URL}/expense/${currentUser.userId}`);
-        const expenseData = await expenseResponse.json();
-        
-        if (expenseData.success) {
-            document.getElementById('totalExpensesCount').textContent = expenseData.expenses.length;
-        }
-        
-        // Get total budgets count
-        const budgetResponse = await fetch(`${API_URL}/budget/${currentUser.userId}`);
-        const budgetData = await budgetResponse.json();
-        
-        if (budgetData.success) {
-            document.getElementById('totalBudgetsCount').textContent = budgetData.budgets.length;
-        }
-    } catch (error) {
-        console.error('Error loading profile stats:', error);
-    }
-}
-
-function switchToEditMode() {
-    // Populate edit fields
-        document.getElementById('editUserId').value = user.userId;
-    document.getElementById('editFirstName').value = user.firstName;
-    document.getElementById('editLastName').value = user.lastName;
-    document.getElementById('editEmail').value = user.email;
-    document.getElementById('editStudentId').value = user.studentId || '';
-    document.getElementById('editAllowance').value = user.monthlyAllowance;
-    document.getElementById('editStatus').value = user.status || 'Active';
-    document.getElementById('editPassword').value = '';
-    document.getElementById('editConfirmPassword').value = '';
-    
-    // Switch views
-    document.getElementById('profileViewMode').style.display = 'none';
-    document.getElementById('profileEditMode').style.display = 'block';
-}
-
-function cancelEdit() {
-    document.getElementById('profileViewMode').style.display = 'block';
-    document.getElementById('profileEditMode').style.display = 'none';
-}
-
-async function saveProfileChanges() {
-    const firstName = document.getElementById('editFirstName').value.trim();
-    const lastName = document.getElementById('editLastName').value.trim();
-    const studentId = document.getElementById('editStudentId').value.trim();
-
-    if (!firstName || !lastName) {
-        showAlert('Error', 'First name and last name are required!');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/auth/update-profile`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: currentUser.userId,
-                firstName,
-                lastName,
-                studentId: studentId || null
-            })
-        });
-
-        const data = await response.json();
-        
-        if (data.success) {
-            // Update local storage
-            currentUser = data.user;
-            localStorage.setItem('user', JSON.stringify(currentUser));
-            
-            // Update navbar
-            document.getElementById('userName').textContent = currentUser.fullName;
-            
-            // Refresh profile display
-            await openProfileModal();
-            
-            showAlert('Success', 'Profile updated successfully!');
-        } else {
-            showAlert('Error', data.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Error', 'Error updating profile!');
-    }
-}
-
-function confirmDeleteAccount() {
-    showConfirm(
-        '⚠️ Delete Account', 
-        'WARNING: This will permanently delete your account and ALL your data (expenses, budgets, etc.). This action CANNOT be undone! Are you absolutely sure?',
-        () => {
-            showPrompt('Confirm Deletion', 'Type "DELETE" to confirm account deletion:', (value) => {
-                if (value === 'DELETE') {
-                    deleteAccount();
-                } else {
-                    showAlert('Cancelled', 'Account deletion cancelled.');
-                }
-            });
-        }
-    );
-}
-
-async function deleteAccount() {
-    try {
-        const response = await fetch(`${API_URL}/auth/delete-account/${currentUser.userId}`, {
-            method: 'DELETE'
-        });
-
-        const data = await response.json();
-        
-        if (data.success) {
-            showAlert('Success', 'Your account has been deleted. You will now be logged out.');
-
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        } else {
-            showAlert('Error', data.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Error', 'Error deleting account!');
-    }
-}
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 0) return 'Today';
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        function submitPrompt() {
+            const value = document.getElementById('promptInput').value;
+            if (promptCallback) promptCallback(value);
+            closePromptModal();
         }
 
         function logout() {
-    showConfirm('Logout', 'Are you sure you want to logout?', () => {
-        localStorage.removeItem('user');
-        window.location.href = 'index.html';
-    });
-}
+            showConfirm('Logout', 'Are you sure you want to logout?', () => {
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            });
+        }
+
+        // EVENT LISTENERS
+        document.getElementById('promptInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitPrompt();
+            }
+        });
+
+        if (document.getElementById('searchInput')) {
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filtered = allUsers.filter(user =>
+                    user.firstName.toLowerCase().includes(searchTerm) ||
+                    user.lastName.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    (user.studentId && user.studentId.toLowerCase().includes(searchTerm))
+                );
+                displayUsers(filtered);
+            });
+        }
+
+        document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const password = document.getElementById('editPassword').value.trim();
+            const confirmPassword = document.getElementById('editConfirmPassword').value.trim();
+
+            if (password && password !== confirmPassword) {
+                showAlert('❌ Error', 'Passwords do not match!');
+                return;
+            }
+
+            if (password && password.length < 6) {
+                showAlert('❌ Error', 'Password must be at least 6 characters long!');
+                return;
+            }
+
+            const userData = {
+                userId: parseInt(document.getElementById('editUserId').value),
+                email: document.getElementById('editEmail').value.trim(),
+                firstName: document.getElementById('editFirstName').value.trim(),
+                lastName: document.getElementById('editLastName').value.trim(),
+                studentId: document.getElementById('editStudentId').value.trim() || null,
+                monthlyAllowance: parseFloat(document.getElementById('editAllowance').value),
+                status: document.getElementById('editStatus').value,
+                password: password || null
+            };
+
+            if (!userData.firstName || !userData.lastName || !userData.email) {
+                showAlert('❌ Error', 'Please fill in all required fields!');
+                return;
+            }
+
+            if (userData.monthlyAllowance <= 0) {
+                showAlert('❌ Error', 'Monthly allowance must be greater than 0!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/admin-update-user`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    showAlert('❌ Error', `Server error: ${response.status} - ${errorText}`);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('✅ Success', 'User updated successfully!');
+                    closeEditModal();
+                    await loadUsersManagement();
+                } else {
+                    showAlert('❌ Error', data.message || 'Failed to update user');
+                }
+            } catch (error) {
+                console.error('Error updating user:', error);
+                showAlert('❌ Error', `An error occurred: ${error.message}`);
+            }
+        });
 
         // Close modals when clicking outside
         window.onclick = function(event) {
@@ -1571,251 +987,41 @@ async function deleteAccount() {
             }
         }
 
-        // Modal management variables
-let confirmCallback = null;
-let promptCallback = null;
-
-// Custom Alert
-function showAlert(title, message) {
-    document.getElementById('alertTitle').textContent = title;
-    document.getElementById('alertMessage').textContent = message;
-    document.getElementById('alertModal').classList.add('active');
-}
-
-function closeAlertModal() {
-    document.getElementById('alertModal').classList.remove('active');
-}
-
-// Custom Confirm
-function showConfirm(title, message, callback) {
-    document.getElementById('confirmTitle').textContent = title;
-    document.getElementById('confirmMessage').textContent = message;
-    confirmCallback = callback;
-    document.getElementById('confirmModal').classList.add('active');
-}
-
-function closeConfirmModal() {
-    document.getElementById('confirmModal').classList.remove('active');
-    confirmCallback = null;
-}
-
-function confirmAction() {
-    if (confirmCallback) confirmCallback();
-    closeConfirmModal();
-}
-
-// Custom Prompt
-function showPrompt(title, message, callback, defaultValue = '') {
-    document.getElementById('promptTitle').textContent = title;
-    document.getElementById('promptMessage').textContent = message;
-    document.getElementById('promptInput').value = defaultValue;
-    promptCallback = callback;
-    document.getElementById('promptModal').classList.add('active');
-    setTimeout(() => document.getElementById('promptInput').focus(), 100);
-}
-
-function closePromptModal() {
-    document.getElementById('promptModal').classList.remove('active');
-    promptCallback = null;
-}
-
-function submitPrompt() {
-    const value = document.getElementById('promptInput').value;
-    if (promptCallback) promptCallback(value);
-    closePromptModal();
-}
-
-// Allow Enter key to submit prompt
-document.getElementById('promptInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        submitPrompt();
-    }
-});
-
-    // Setup search filter for users
-    if (document.getElementById('searchInput')) {
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = allUsers.filter(user =>
-                user.firstName.toLowerCase().includes(searchTerm) ||
-                user.lastName.toLowerCase().includes(searchTerm) ||
-                user.email.toLowerCase().includes(searchTerm) ||
-                (user.studentId && user.studentId.toLowerCase().includes(searchTerm))
-            );
-            displayUsers(filtered);
-        });
-    }
-
-    // Handle edit user form submission
-    document.getElementById('editUserForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const password = document.getElementById('editPassword').value.trim();
-        const confirmPassword = document.getElementById('editConfirmPassword').value.trim();
-
-        // Validate passwords if provided
-        if (password && password !== confirmPassword) {
-            showAlert('❌ Error', 'Passwords do not match!');
-            return;
+        // Load users on initial page load if UserManagement is active
+        if (document.getElementById('UserManagement') && document.getElementById('UserManagement').classList.contains('active')) {
+            loadUsersManagement();
         }
 
-        if (password && password.length < 6) {
-            showAlert('❌ Error', 'Password must be at least 6 characters long!');
-            return;
-        }
-
-        const userData = {
-            userId: parseInt(document.getElementById('editUserId').value),
-            email: document.getElementById('editEmail').value.trim(),
-            firstName: document.getElementById('editFirstName').value.trim(),
-            lastName: document.getElementById('editLastName').value.trim(),
-            studentId: document.getElementById('editStudentId').value.trim() || null,
-            monthlyAllowance: parseFloat(document.getElementById('editAllowance').value),
-            status: document.getElementById('editStatus').value,
-            password: password || null
-        };
-
-        // Validate required fields
-        if (!userData.firstName || !userData.lastName || !userData.email) {
-            showAlert('❌ Error', 'Please fill in all required fields!');
-            return;
-        }
-
-        if (userData.monthlyAllowance <= 0) {
-            showAlert('❌ Error', 'Monthly allowance must be greater than 0!');
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/auth/admin-update-user`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData)
+        // ---------------------------
+        // Minimal hooks to integrate the NEW Category Management code:
+        // - attach click handler(s) so CategoryManagement is loaded when clicked
+        // - load categories if CategoryManagement is active on initial page load
+        // ---------------------------
+        (function attachCategoryHooks() {
+            // attach to sidebar page element(s)
+            document.querySelectorAll('.sidebar-page[data-page="CategoryManagement"]').forEach(el => {
+                el.addEventListener('click', () => {
+                    // small delay so togglePage finishes showing the page
+                    setTimeout(() => {
+                        if (typeof loadCategoriesManagement === 'function') {
+                            loadCategoriesManagement();
+                        }
+                    }, 80);
+                });
             });
 
-            const data = await response.json();
-
-            if (data.success) {
-                showAlert('✅ Success', 'User updated successfully!');
-                closeEditModal();
-                await loadUsersManagement();
-            } else {
-                showAlert('❌ Error', data.message || 'Failed to update user');
-            }
-        } catch (error) {
-            console.error('Error updating user:', error);
-            showAlert('❌ Error', 'An error occurred while updating the user');
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-            const editForm = document.getElementById('editUserForm');
-            if (editForm) {
-                editForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    console.log('Edit form submitted');
-
-                    const password = document.getElementById('editPassword').value.trim();
-                    const confirmPassword = document.getElementById('editConfirmPassword').value.trim();
-
-                    // Validate passwords if provided
-                    if (password && password !== confirmPassword) {
-                        showAlert('❌ Error', 'Passwords do not match!');
-                        return;
-                    }
-
-                    if (password && password.length < 6) {
-                        showAlert('❌ Error', 'Password must be at least 6 characters long!');
-                        return;
-                    }
-
-                    const userData = {
-                        userId: parseInt(document.getElementById('editUserId').value),
-                        email: document.getElementById('editEmail').value.trim(),
-                        firstName: document.getElementById('editFirstName').value.trim(),
-                        lastName: document.getElementById('editLastName').value.trim(),
-                        studentId: document.getElementById('editStudentId').value.trim() || null,
-                        monthlyAllowance: parseFloat(document.getElementById('editAllowance').value),
-                        status: document.getElementById('editStatus').value,
-                        password: password || null
-                    };
-
-                    console.log('Sending user data:', userData);
-
-                    // Validate required fields
-                    if (!userData.firstName || !userData.lastName || !userData.email) {
-                        showAlert('❌ Error', 'Please fill in all required fields!');
-                        return;
-                    }
-
-                    if (isNaN(userData.monthlyAllowance) || userData.monthlyAllowance <= 0) {
-                        showAlert('❌ Error', 'Monthly allowance must be greater than 0!');
-                        return;
-                    }
-
-                    try {
-                        console.log('Making PUT request to:', `${API_URL}/auth/admin-update-user`);
-
-                        const response = await fetch(`${API_URL}/auth/admin-update-user`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify(userData)
-                        });
-
-                        console.log('Update response status:', response.status);
-
-                        // Check if response is ok before parsing JSON
-                        if (!response.ok) {
-                            const errorText = await response.text();
-                            console.error('Update error response:', errorText);
-                            showAlert('❌ Error', `Server error: ${response.status} - ${errorText}`);
-                            return;
-                        }
-
-                        const data = await response.json();
-                        console.log('Update response data:', data);
-
-                        if (data.success) {
-                            showAlert('✅ Success', 'User updated successfully!');
-                            closeEditModal();
-                            await loadUsersManagement();
-                        } else {
-                            showAlert('❌ Error', data.message || 'Failed to update user');
-                        }
-                    } catch (error) {
-                        console.error('Update error details:', error);
-                        showAlert('❌ Error', `An error occurred: ${error.message}`);
-                    }
-                });
-            }
-        });
-
-        async function testAPIConnection() {
-                try {
-                    console.log('Testing API connection to:', API_URL);
-                    const response = await fetch(`${API_URL}/admin/users`);
-                    console.log('API test response:', response.status);
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('API test data:', data);
-                        return true;
-                    }
-                    return false;
-                } catch (error) {
-                    console.error('API connection test failed:', error);
-                    return false;
+            // if the CategoryManagement page is already active on page load, load categories now
+            if (document.getElementById('CategoryManagement') && document.getElementById('CategoryManagement').classList.contains('active')) {
+                if (typeof loadCategoriesManagement === 'function') {
+                    loadCategoriesManagement();
                 }
             }
-            
-    // Load users on initial page load if UserManagement is active
-    if (document.getElementById('UserManagement') && document.getElementById('UserManagement').classList.contains('active')) {
-        loadUsersManagement();
-    }
 
-
+            // If the Add Category modal exists, populate icons initially (so user sees icons)
+            if (typeof populateIconSelector === 'function') {
+                populateIconSelector();
+            }
+        })();
     </script>
 </body>
 </html>
